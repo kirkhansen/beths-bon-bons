@@ -6,4 +6,4 @@ menu: main
 draft: false
 ---
 
-bethsbonbons@google.com
+bethsbonbons@gmail.com
