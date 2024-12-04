@@ -1,5 +1,5 @@
 ---
-title: "Beth's Bon Bon's"
+title: "Beth's Bon Bons"
 omit_header_text: true
 description: ""
 type: page
