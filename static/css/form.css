@@ -1,5 +1,5 @@
 form { 
-    max-width:420px; margin:50px auto; 
+    max-width:500px; margin:50px auto;
 }
 
 .form-input {
@@ -47,4 +47,3 @@ textarea {
 [type="submit"]:hover { 
     background:#CC4949; 
 }
-

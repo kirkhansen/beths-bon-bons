@@ -10,7 +10,7 @@ enableRobotsTXT = true
 
 [languages]
   [languages.en]
-    title = "Beth's Bon Bon's"
+    title = "Beth's Bon Bons"
     weight = 1
     contentDir = "content/en"
 
