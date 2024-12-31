@@ -1,7 +1,14 @@
 normal:
   - name: Death by Chocolate
-    value: death_by_chocolate
-  - name: Vanilla
+    # Use the google form field entry id for the value here
+    value: "entry.572468806"
+  - name: Very Vanilla
     value: vanilla
   - name: Red Velvet
     value: red_velvot
+  - name: Strawberry
+    value: red_velvot
+  - name: Lemon
+    value: 
+  - name: Birthday Cake
+    value: 

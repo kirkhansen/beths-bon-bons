@@ -1,15 +1,21 @@
 form { 
-    max-width:500px; margin:50px auto;
+    max-width:600px; 
+    margin: auto;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 .form-input {
-    color:white;
     font-family: Helvetica, Arial, sans-serif;
     font-weight:500;
     border-radius: 5px;
     line-height: 22px;
     background-color: transparent;
-    border:2px solid #CC6666;
+    border:2px solid #dc727e;
     transition: all 0.3s;
     padding: 13px;
     margin-bottom: 15px;
@@ -18,8 +24,25 @@ form {
     outline:0;
 }
 
+.form-label {
+    flex: 0 0 300px; /* Adjust to desired label width */
+    margin-right: 1rem;
+    font-weight: bold;
+}
+
+.input-with-unit {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px; /* Space between input and unit */
+}
+
 .form-input:focus { 
-    border:2px solid #CC4949; 
+    border:2px solid #dc727e; 
+}
+
+.unit {
+    font-size: 20px;
+    color: #555;
 }
 
 textarea {
@@ -31,19 +54,19 @@ textarea {
 [type="submit"] {
     font-family: Helvetica, Arial, sans-serif;
     width: 100%;
-    background:#CC6666;
+    background:#dc727e;
     border-radius:5px;
     border:0;
     cursor:pointer;
-    color:white;
+    color:#ffffff;
     font-size:24px;
     padding-top:10px;
     padding-bottom:10px;
     transition: all 0.3s;
-    margin-top:-4px;
+    margin-top:15px;
     font-weight:700;
 }
 
 [type="submit"]:hover { 
-    background:#CC4949; 
+    background:#c3606f; 
 }

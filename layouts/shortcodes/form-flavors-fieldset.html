@@ -1,24 +1,31 @@
-{{ $flavors := site.Data.flavors.normal }}
+{{ $normal_flavors := site.Data.flavors.normal }}
 <link rel="stylesheet" href="/css/form.css">
-<form action="https://docs.google.com/forms/d/e/<formID/formResponse" method="post" target="hidden_iframe" onsubmit="submitted=true">
-<label>Email*</label>
-<input type="email" placeholder="Email address*" class="form-input" name="entry.1119409224" required>
-<fieldset>
-    <legend>Choose Your Flavors:</legend>
-    {{ range $index, $flavor := $flavors }}
-        <div>
-            <label for="flavor{{ add $index 1 }}">Flavor {{ add $index 1 }}:</label>
-            <select class="flavor-dropdown" id="flavor{{ add $index 1 }}" name="flavor{{ add $index 1 }}">
-                <option value="">None</option>
-                {{ range $flavors }}
-                    <option value="{{ .value }}">{{ .name }}</option>
-                {{ end }}
-            </select>
-            <label for="dozen{{ add $index 1 }}">Dozens:</label>
-            <input type="number" id="dozen{{ add $index 1 }}" name="dozen{{ add $index 1 }}" min="0" max="10" value="0">
-        </div>
-    {{ end }}
-</fieldset>
+<!--Take over form response redirect back to our page-->
+<script type="text/javascript">var submitted=false;</script>
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {window.location='/thank-you';}"></iframe>
+
+<form action="https://docs.google.com/forms/u/0/d/1JP8MowapEqTrKUy-1fPiuhUk9S20RSR0LxnipaUsPuM/formResponse" method="post" target="hidden_iframe" onsubmit="submitted=true">
+<label>Your Email*</label>
+<input type="email" class="form-input" name="entry.1295339816" required>
+    <fieldset>
+        <legend>Choose Your Flavors:</legend>
+        {{ range $normal_flavors }}
+            <div class="form-row">
+                <label class="form-label" for="{{ .value }}">{{ .name }}</label>
+                <div class="input-with-unit">
+                <input 
+                    class="form-input"
+                    type="number" 
+                    id="dozens-{{ .value }}" 
+                    name="{{ .value }}" 
+                    min="0" 
+                    value="0"
+                >
+                <span class="unit">dozen</span>
+                </div>
+            </div>
+        {{ end }}
+    </fieldset>
    <button type="submit">Send</button>
 </form>
 
