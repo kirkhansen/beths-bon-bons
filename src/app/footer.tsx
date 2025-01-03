@@ -6,7 +6,9 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
-function Footer() {
+type Props = {};
+
+const Footer: React.FC<Props> = () => {
     return (
             <footer>
                 <Row>
@@ -14,7 +16,7 @@ function Footer() {
                     <Col>
                     <ListGroup horizontal className="float-end">
                         <ListGroupItem><a href="https://www.facebook.com/bethsbonbons/"><FaFacebook/></a></ListGroupItem>
-                        <ListGroupItem><a href=""><FaInstagram/></a></ListGroupItem>
+                        <ListGroupItem><a href="https://www.instagram.com/bethsbonbons/"><FaInstagram/></a></ListGroupItem>
                         <ListGroupItem><a href="mailto:bethsbonbons@gmail.com"><MdEmail/></a></ListGroupItem>
                     </ListGroup>
                     </Col>

@@ -8,18 +8,57 @@ import Button from 'react-bootstrap/Button';
 
 type Props = {};
 
+type PaymentMethod = 'venmo' | 'cash' | null;
+type CakeBallStyle = 'cakeBallTruffle' | 'cakePop' | 'upsideDownCakePop' | null;
+
+// ADD MORE FLAVORS HERE
+const CakeFlavors = [
+    "veryVanilla",
+    "deathByChocolate",
+    "birthdayCakeBatter",
+    "redVelvet",
+] as const;
+// END FLAVORS ADDING
+
+// Generate the dozen fields for each flavor in CakeBallFlavor
+type CakeBallFlavorDozens = {
+  [key in typeof CakeFlavors[number] as `dozensOf${Capitalize<key>}`]: number;
+};
+
+
 type FormState = {
-  name: string;
+  fullName: string;
   email: string;
-  orderDetails: string;
+  eventDate: string;
+  pickupDate: string;  // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
+  referralSource: string,
+  paymentMethod: PaymentMethod,
+  eventType: string,
+  eventThemeDetails: string,
+  cakeBallStyle: CakeBallStyle;
+// TODO: this is likely not the way to do this, BUT...
+// Auto extend the state types using the dynamic CakeBallFlavorDozens. Hopefully will make swapping flavors less work when new forms get created using these elements
+// for holidays and such...
+} & CakeBallFlavorDozens;
+
+const defaultFormState:  { [K in keyof FormState]: FormState[K] } = {
+  fullName: '',
+  email: '',
+  eventDate: '',
+  pickupDate: '',
+  referralSource: '',
+  paymentMethod: null,
+  eventType: '',
+  eventThemeDetails: '',
+  cakeBallStyle: null,
+  dozensOfVeryVanilla: 0,
+  dozensOfRedVelvet: 0,
+  dozensOfBirthdayCakeBatter: 0,
+  dozensOfDeathByChocolate: 0,
 };
 
 const OrderPage: React.FC<Props> = () => {
-  const [formState, setFormState] = useState<FormState>({
-    name: '',
-    email: '',
-    orderDetails: ''
-  });
+  const [formState, setFormState] = useState<FormState>(defaultFormState);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

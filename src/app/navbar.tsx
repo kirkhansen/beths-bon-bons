@@ -1,12 +1,13 @@
 import Container from 'react-bootstrap/Container'
-import NavbarBrand from 'react-bootstrap/NavbarBrand';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavbarToggle from 'react-bootstrap/esm/NavbarToggle';
 import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
 import Link from 'next/link';
 
-function MainNavBar () {
+type Props = {};
+
+const MainNavBar: React.FC<Props> = () => {
   return (
     <Navbar expand="lg">
         <Container fluid>
