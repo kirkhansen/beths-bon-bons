@@ -10,7 +10,7 @@ function MainNavBar () {
   return (
     <Navbar expand="lg">
         <Container fluid>
-            <NavbarBrand href="#home">Beth's Bon Bons & Cake Pops</NavbarBrand>
+            <Link className="navbar-brand" href="/">Beth's Bon Bons & Cake Pops</Link>
             <NavbarToggle ario-controls="basic-navbar-nav" />
             <NavbarCollapse id="basic-navbar-nav">
                 <Nav className="ms-auto">

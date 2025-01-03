@@ -7,16 +7,6 @@ import MainNavbar from "./navbar";
 import Container from 'react-bootstrap/esm/Container';
 import Footer from './footer';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: "Beth's Bon Bons & Cake Pops",
   description: "",
@@ -30,11 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="d-flex flex-column min-vh-100"
       >
         <Container className="p-3">
         <MainNavbar />
         {children}
+        </Container>
+        <Container className="mt-auto">
         <Footer />
         </Container>
       </body>
