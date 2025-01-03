@@ -5,59 +5,17 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+import {defaultFormState, BaseFormState, postToGoogleForm, CakeBallStyles, CakeFlavors} from '../../utils/api';
+import { FloatingLabel } from 'react-bootstrap';
 
 type Props = {};
-type PaymentMethod = 'venmo' | 'cash' | null;
-type CakeBallStyle = 'cakeBallTruffle' | 'cakePop' | 'upsideDownCakePop' | null;
-
-// Use the google form field entry id for the value here
-// and add a `dozensOf<NewFlavor>: 0,` in the `defaultFormState` object below
-enum CakeFlavors {
-    "deathByChocolate" = "entry.572468806",
-    // "veryVanilla": "",
-    // "birthdayCakeBatter": "",
-    // "redVelvet": "",
-}; 
-
-// Generate the dozen fields for each flavor in CakeBallFlavor
-type CakeBallFlavorDozens = {
-  [key in keyof typeof CakeFlavors as `dozensOf${Capitalize<key>}`]: number;
-};
-
-
-type FormState = {
-  fullName: string;
-  email: string;
-  eventDate: string;
-  pickupDate: string;  // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
-  referralSource: string,
-  paymentMethod: PaymentMethod,
-  eventType: string,
-  eventThemeDetails: string,
-  cakeBallStyle: CakeBallStyle;
-// TODO: this is likely not the way to do this, BUT...
-// Auto extend the state types using the dynamic CakeBallFlavorDozens. Hopefully will make swapping flavors less work when new forms get created using these elements
-// for holidays and such...
-} & CakeBallFlavorDozens;
-
-const defaultFormState:  { [K in keyof FormState]: FormState[K] } = {
-  fullName: '',
-  email: '',
-  eventDate: '',
-  pickupDate: '',
-  referralSource: '',
-  paymentMethod: null,
-  eventType: '',
-  eventThemeDetails: '',
-  cakeBallStyle: null,
-  dozensOfDeathByChocolate: 0,
-//   dozensOfVeryVanilla: 0,
-//   dozensOfRedVelvet: 0,
-//   dozensOfBirthdayCakeBatter: 0,
-};
 
 const OrderPage: React.FC<Props> = () => {
-  const [formState, setFormState] = useState<FormState>(defaultFormState);
+  const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
+  const [responseMessage, setResponseMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -68,59 +26,93 @@ const OrderPage: React.FC<Props> = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission logic
+
+    setLoading(true);
+    setError(null);
     console.log('Form submitted:', formState);
+
+    try {
+        postToGoogleForm(formState);
+    } catch(error) {
+        setError("An error occurred submitting the form. Please reach out via Facebook or Email if this continues.");
+    } finally {
+        setLoading(false);
+    }
   };
 
   return (
+    <div>
     <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
+          <FloatingLabel label="Full Name">
+            <Form.Control name="fullName" placeholder="John Doe" onChange={handleChange}/>
+          </FloatingLabel>
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Control name="email" placeholder="Email" onChange={handleChange} type="email"/>
+          <FloatingLabel label="Email Address">
+            <Form.Control name="email" placeholder="Email" onChange={handleChange} type="email"/>
+          </FloatingLabel>
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Control name="eventDate" placeholder="Date of Event" onChange={handleChange} type="date"/>
+          <FloatingLabel label="Date of Event">
+            <Form.Control name="eventDate" placeholder="Date of Event" onChange={handleChange} type="date"/>
+          </FloatingLabel>
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
+          <FloatingLabel label="Date of Pickup">
+            <Form.Control name="pickupDate" placeholder="Date of Pickup" onChange={handleChange} type="date"/>
+          </FloatingLabel>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <FloatingLabel label="How did you hear about me?">
+            <Form.Control name="referralSource" placeholder="Facebook" onChange={handleChange}/>
+          </FloatingLabel>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <FloatingLabel label="Form of Payment">
+            <Form.Control name="paymentMethod" placeholder="venmo" onChange={handleChange}/>
+          </FloatingLabel>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <FloatingLabel label="Event Type">
+            <Form.Control name="eventType" placeholder="event type" onChange={handleChange}/>
+            <Form.Text>e.g., birthday, baptism, anniversary</Form.Text>
+          </FloatingLabel>
+        </Form.Group>
+        <Form.Group className="mb-3">
+            <FloatingLabel label="Event Theme Details">
+                <Form.Control name="eventThemeDetails" placeholder="details" onChange={handleChange}/>
+                <Form.Text>Describe the decorations or theme you want. Please include as much detail as possible such as color, shape, characters, etc... If you have an invitation or decorations for your event, sending me a copy of those can help me match your event more closely!</Form.Text>
+            </FloatingLabel>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <FloatingLabel label="Select your style">
+            <Form.Select>
+                <option>N/A</option>
+                {Object.entries(CakeBallStyles).map(([key, value]) => (
+                <option key={key} value={key}>
+                    {value}
+                </option>
+                ))}
+            </Form.Select>
+          </FloatingLabel>
         </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="fullName" placeholder="Full Name" onChange={handleChange}/>
-        </Form.Group>
+        {/* Build up inputs for each flavor we have */}
+        {Object.entries(CakeFlavors).map(([key, value]) => (
+            <Form.Group key={key + '-form-group'} className="mb-3">
+                <FloatingLabel key={key + '-label'} label={'Dozens of ' + value}>
+                    <Form.Control key={key} name={key} placeholder={key} onChange={handleChange} type="number"/>
+                </FloatingLabel>
+            </Form.Group>
+        ))}
       <Button variant="primary" type="submit">
         Submit
       </Button>
     </Form>
+    {error && <Alert key='danger'>error</Alert>}
+    {responseMessage && !error && !loading && <Alert key="success">Form submitted!</Alert>}
+    </div>
   );
 }
 
