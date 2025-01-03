@@ -7,22 +7,21 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 
 type Props = {};
-
 type PaymentMethod = 'venmo' | 'cash' | null;
 type CakeBallStyle = 'cakeBallTruffle' | 'cakePop' | 'upsideDownCakePop' | null;
 
-// ADD MORE FLAVORS HERE
-const CakeFlavors = [
-    "veryVanilla",
-    "deathByChocolate",
-    "birthdayCakeBatter",
-    "redVelvet",
-] as const;
-// END FLAVORS ADDING
+// Use the google form field entry id for the value here
+// and add a `dozensOf<NewFlavor>: 0,` in the `defaultFormState` object below
+enum CakeFlavors {
+    "deathByChocolate" = "entry.572468806",
+    // "veryVanilla": "",
+    // "birthdayCakeBatter": "",
+    // "redVelvet": "",
+}; 
 
 // Generate the dozen fields for each flavor in CakeBallFlavor
 type CakeBallFlavorDozens = {
-  [key in typeof CakeFlavors[number] as `dozensOf${Capitalize<key>}`]: number;
+  [key in keyof typeof CakeFlavors as `dozensOf${Capitalize<key>}`]: number;
 };
 
 
@@ -51,10 +50,10 @@ const defaultFormState:  { [K in keyof FormState]: FormState[K] } = {
   eventType: '',
   eventThemeDetails: '',
   cakeBallStyle: null,
-  dozensOfVeryVanilla: 0,
-  dozensOfRedVelvet: 0,
-  dozensOfBirthdayCakeBatter: 0,
   dozensOfDeathByChocolate: 0,
+//   dozensOfVeryVanilla: 0,
+//   dozensOfRedVelvet: 0,
+//   dozensOfBirthdayCakeBatter: 0,
 };
 
 const OrderPage: React.FC<Props> = () => {
