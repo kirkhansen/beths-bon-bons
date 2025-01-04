@@ -57,8 +57,11 @@ const OrderPage: React.FC<Props> = () => {
           </FloatingLabel>
         </Form.Group>
         <Form.Group className="mb-3">
-          <FloatingLabel label="Form of Payment">
-            <Form.Control name="paymentMethod" placeholder="venmo" onChange={handleChange}/>
+          <FloatingLabel label="Payment Preference">
+            <Form.Select name="paymentMethod">
+                <option value="venmo">Venmo</option>
+                <option value="cash">Cash</option>
+            </Form.Select>
           </FloatingLabel>
         </Form.Group>
         <Form.Group className="mb-3">
@@ -75,7 +78,7 @@ const OrderPage: React.FC<Props> = () => {
         </Form.Group>
         <Form.Group className="mb-3">
           <FloatingLabel label="Select your style">
-            <Form.Select>
+            <Form.Select name="cakeBallStyle">
                 <option>N/A</option>
                 {Object.entries(CakeBallStyles).map(([key, value]) => (
                 <option key={key} value={key}>
