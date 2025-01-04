@@ -1,4 +1,4 @@
-const GOOGLE_FORM_URI = "https://docs.google.com/forms/u/0/d/1JP8MowapEqTrKUy-1fPiuhUk9S20RSR0LxnipaUsPuM/formResponse" 
+export const GOOGLE_FORM_URI = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdynSNJdglN23cmKY58j2Atio7nWYNoPNdyPOWrlKI-LnBTrw/formResponse"
 
 type PaymentMethod = 'venmo' | 'cash' | null;
 // type CakeBallStyle = 'cakeBallTruffle' | 'cakePop' | 'upsideDownCakePop' | null;
@@ -68,21 +68,4 @@ export const defaultFormState:  { [K in keyof BaseFormState]: BaseFormState[K] }
 export interface PostResponse {
     success: boolean;
     message: string;
-}
-
-export async function postToGoogleForm(formData: BaseFormState): Promise<PostResponse>{
-    const response = await fetch(GOOGLE_FORM_URI, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData),
-    });
-
-    if (!response.ok) {
-        throw new Error("Failed to submit data");
-    }
-
-    const data: PostResponse = await response.json();
-    return data;
 }

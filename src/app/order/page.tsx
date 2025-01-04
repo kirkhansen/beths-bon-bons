@@ -1,12 +1,10 @@
 'use client'
 
 import React, { useState } from 'react';
-import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import {defaultFormState, BaseFormState, postToGoogleForm, CakeBallStyles, CakeFlavors} from '../../utils/api';
+import {defaultFormState, BaseFormState, CakeBallStyles, CakeFlavors, GOOGLE_FORM_URI} from '../../utils/api';
 import { FloatingLabel } from 'react-bootstrap';
 
 type Props = {};
@@ -25,24 +23,14 @@ const OrderPage: React.FC<Props> = () => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    setLoading(true);
-    setError(null);
-    console.log('Form submitted:', formState);
-
-    try {
-        postToGoogleForm(formState);
-    } catch(error) {
-        setError("An error occurred submitting the form. Please reach out via Facebook or Email if this continues.");
-    } finally {
-        setLoading(false);
-    }
+    setResponseMessage("Thanks for your order! Expect to hear from me in the next few days to confirm details!")
   };
 
   return (
     <div>
-    <Form onSubmit={handleSubmit}>
+    {/* Thanks to CORS on google forms, I can't do this via react and fetch APIs. Boo. So, hidden iframe nonsense it is */}
+    <iframe id="response-iframe" name="response-iframe" style={{display: 'none'}}></iframe>
+    <Form onSubmit={handleSubmit} id="form" target="response-iframe" action={GOOGLE_FORM_URI} method="post">
         <Form.Group className="mb-3">
           <FloatingLabel label="Full Name">
             <Form.Control name="fullName" placeholder="John Doe" onChange={handleChange}/>
@@ -110,8 +98,8 @@ const OrderPage: React.FC<Props> = () => {
         Submit
       </Button>
     </Form>
-    {error && <Alert key='danger'>error</Alert>}
-    {responseMessage && !error && !loading && <Alert key="success">Form submitted!</Alert>}
+    {error && <Alert variant='danger'>{error}</Alert>}
+    {responseMessage && !error && !loading && <Alert variant="success">{responseMessage}</Alert>}
     </div>
   );
 }
