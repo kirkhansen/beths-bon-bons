@@ -2,7 +2,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import MainNavbar from "./navbar";
 import Container from 'react-bootstrap/esm/Container';
 import Footer from './footer';

@@ -4,16 +4,12 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import {defaultFormState, BaseFormState, CakeBallStyles, CakeFlavors, GOOGLE_FORM_URI, googleFormEntryIdMap} from '../../constants';
+import {defaultFormState, BaseFormState, CakeBallStyles, CakeFlavors, GOOGLE_FORM_URI, googleFormEntryIdMap, GoogleFormEntryIdMap} from '../../constants';
 import { FloatingLabel } from 'react-bootstrap';
 
-type Props = {};
-
-const OrderPage: React.FC<Props> = () => {
+const OrderPage: React.FC = () => {
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [responseMessage, setResponseMessage] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -22,7 +18,7 @@ const OrderPage: React.FC<Props> = () => {
     setFormState({ ...formState, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = () => {
     setResponseMessage("Thanks for your order! Expect to hear from me in the next few days to confirm details!")
   };
 
@@ -95,7 +91,7 @@ const OrderPage: React.FC<Props> = () => {
         {Object.entries(CakeFlavors).map(([key, value]) => (
             <Form.Group key={key + '-form-group'} className="mb-3">
                 <FloatingLabel key={key + '-label'} label={'Dozens of ' + value}>
-                    <Form.Control key={key} name={googleFormEntryIdMap[key]} placeholder={key} onChange={handleChange} type="number"/>
+                    <Form.Control key={key} name={googleFormEntryIdMap[key as keyof GoogleFormEntryIdMap]} placeholder={key} onChange={handleChange} type="number"/>
                 </FloatingLabel>
             </Form.Group>
         ))}
@@ -103,8 +99,7 @@ const OrderPage: React.FC<Props> = () => {
         Submit
       </Button>
     </Form>
-    {error && <Alert variant='danger'>{error}</Alert>}
-    {responseMessage && !error && !loading && <Alert variant="success">{responseMessage}</Alert>}
+    {responseMessage && <Alert variant="success">{responseMessage}</Alert>}
     </div>
     </div>
   );

@@ -7,9 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import siteLogo from '../images/site_logo.jpg';
 
-type Props = {};
-
-const MainNavBar: React.FC<Props> = () => {
+const MainNavBar: React.FC = () => {
   return (
     <Navbar expand="lg">
         <Container fluid>

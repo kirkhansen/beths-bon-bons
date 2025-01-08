@@ -34,7 +34,7 @@ export type BaseFormState = {
 };
 
 // Define the GoogleFormEntryIdMap with the same keys as FormState, but with string values
-type GoogleFormEntryIdMap = {
+export type GoogleFormEntryIdMap = {
   [K in keyof BaseFormState]: string; // Ensure the values are of type string (e.g., "entry.<num>")
 };
 
