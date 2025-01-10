@@ -5,9 +5,9 @@ type PaymentMethod = "venmo" | "cash" | null;
 
 // key is what we send to the form, value is what should be displayed to the user
 export enum CakeBallStyles {
-    truffle = "Cake Ball Truffle",
     pop = "Cake Pop",
     upsideDownPop = "Upside Down Cake Pop",
+    truffle = "Cake Ball Truffle",
 }
 
 // key is what we send to the form, value is what should be displayed to the user

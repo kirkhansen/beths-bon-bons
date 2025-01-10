@@ -22,11 +22,11 @@ export default function RootLayout({
         className="d-flex flex-column min-vh-100"
       >
         <Container className="p-3">
-        <MainNavbar />
-        {children}
+          <MainNavbar />
+          {children}
         </Container>
         <Container className="mt-auto">
-        <Footer />
+          <Footer />
         </Container>
       </body>
     </html>
