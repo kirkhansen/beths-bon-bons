@@ -103,7 +103,7 @@ const OrderPage: React.FC = () => {
                 <Form.Group key={key + '-form-group'} className="mb-3">
                     <InputGroup key={key + '-input-group'}>
                         <FloatingLabel key={key + '-label'} label={value}>
-                            <Form.Control key={key} name={googleFormEntryIdMap[key as keyof GoogleFormEntryIdMap]} placeholder={key} onChange={handleChange} type="number"/>
+                            <Form.Control key={key} name={googleFormEntryIdMap[key as keyof GoogleFormEntryIdMap]} placeholder={key} onChange={handleChange} type="number" min="0"/>
                         </FloatingLabel>
                         <InputGroup.Text key={key + 'input-group-text'}>Dozen</InputGroup.Text>
                     </InputGroup>
