@@ -69,3 +69,5 @@ export interface PostResponse {
     success: boolean;
     message: string;
 }
+
+export const email = "bethsbonbons@gmail.com";

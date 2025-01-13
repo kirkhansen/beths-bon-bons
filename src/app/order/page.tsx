@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import InputGroup from 'react-bootstrap/InputGroup';
-import {defaultFormState, BaseFormState, CakeBallStyles, CakeFlavors, GOOGLE_FORM_URI, googleFormEntryIdMap, GoogleFormEntryIdMap} from '../../constants';
+import {email, defaultFormState, BaseFormState, CakeBallStyles, CakeFlavors, GOOGLE_FORM_URI, googleFormEntryIdMap, GoogleFormEntryIdMap} from '../../constants';
 import { FloatingLabel } from 'react-bootstrap';
 
 const OrderPage: React.FC = () => {
@@ -81,7 +81,7 @@ const OrderPage: React.FC = () => {
         <Form.Group className="mb-3">
             <FloatingLabel label="Event Theme Details">
                 <Form.Control required name={googleFormEntryIdMap["eventThemeDetails"]} placeholder="details" onChange={handleChange}/>
-                <Form.Text>Describe the decorations or theme you want. Please include as much detail as possible such as color, shape, characters, etc... If you have an invitation or decorations for your event, sending me a copy of those can help me match your event more closely!</Form.Text>
+                <Form.Text>Describe the decorations or theme you want. Please include as much detail possible, e.g., color, shape, characters, etc. You can send any inspirational photos to my <a href={`mailto:${email}`}>email</a> to more closely match your event!</Form.Text>
             </FloatingLabel>
         </Form.Group>
         <Form.Group className="mb-3">
@@ -97,7 +97,7 @@ const OrderPage: React.FC = () => {
           </FloatingLabel>
         </Form.Group>
         <fieldset className="border p-3 rounded">
-            <legend>Flavors by the dozen</legend>
+            <legend className="text-center">Flavors by the dozen</legend>
             {/* Build up inputs for each flavor we have */}
             {Object.entries(CakeFlavors).map(([key, value]) => (
                 <Form.Group key={key + '-form-group'} className="mb-3">
@@ -110,9 +110,11 @@ const OrderPage: React.FC = () => {
                 </Form.Group>
             ))}
         </fieldset>
-      <Button variant="dark" type="submit">
-        Submit
-      </Button>
+        <div className="d-grid gap-2">
+          <Button variant="dark" type="submit">
+            Submit
+          </Button>
+        </div>
     </Form>
     {responseMessage && <Alert variant="success">{responseMessage}</Alert>}
     </div>

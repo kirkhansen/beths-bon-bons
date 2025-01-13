@@ -4,7 +4,7 @@ import beth_collage from "../../images/beth_collage.jpg"
 const Home: React.FC = () => {
   return (
       <div>
-      <div className="d-flex justify-content-center align-items-center row">
+      <div className="d-flex align-items-center text-center row">
         <div className="col">
           <p>
             Beth's Bon Bons & Cake Pops, LLC is a home bakery located in Grimes, Iowa
