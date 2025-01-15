@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Carousel from "react-bootstrap/Carousel";
 import CarouselItem from "react-bootstrap/CarouselItem";
-import siteLogo from '../images/site_logo_lg.png';
 
 const importAll = (r: __WebpackModuleApi.RequireContext): string[] => {
   return r.keys().map((key) => r(key).default);
@@ -13,10 +12,7 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-center align-items-center text-center">
-        <p>Crafting scrumptious cake pops and gourmet treats for central Iowa since 2022</p>
-      </div>
-      <main className="d-flex justify-content-center row">
+      <main className="d-flex justify-content-center row mt-5">
         <div className="col-lg-8">
           <Carousel className="d-flex justify-content-center">
             {images.map((src, index) => (
@@ -25,11 +21,6 @@ const Home: React.FC = () => {
             </CarouselItem>
             ))}
           </Carousel>
-        </div>
-        <div className="d-flex justify-content-center align-items-center row">
-          <div className="col-lg-6 justify-content-center">
-              <Image className="img-fluid" src={siteLogo} alt="Beth's Bon Bons & Cake Pops"></Image>
-          </div>
         </div>
       </main>
     </div>

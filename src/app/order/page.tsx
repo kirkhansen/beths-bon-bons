@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
+import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
@@ -27,7 +28,7 @@ const OrderPage: React.FC = () => {
       event.stopPropagation();
     }
     else {
-      setResponseMessage("Thanks for your order! Expect to hear from me in the next few days to confirm details!");
+      setResponseMessage("Thanks for your order! An email was sent to {formState['email']} with your responses. If you don't recieve an email, please reach out on facebook or email.");
     }
     setValidated(true);
   };
@@ -57,7 +58,7 @@ const OrderPage: React.FC = () => {
           <FloatingLabel label="Date and Time of Pickup">
             <Form.Control required name={googleFormEntryIdMap["pickupDatetime"]} placeholder="Date of Pickup" onChange={handleChange} type="datetime-local"/>
           </FloatingLabel>
-            <Form.Text>Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge</Form.Text>
+            <Form.Text>Treats are good for 3-5 days at room temperature, and they are good up to two weeks in the refrigerator</Form.Text>
         </Form.Group>
         <Form.Group className="mb-3">
           <FloatingLabel label="How did you hear about me?">
@@ -72,6 +73,11 @@ const OrderPage: React.FC = () => {
             </Form.Select>
           </FloatingLabel>
         </Form.Group>
+        <Accordion flush>
+          {/* Custom orders */}
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>Custom Order...</Accordion.Header>
+            <Accordion.Body>
         <Form.Group className="mb-3">
           <FloatingLabel label="Event Type">
             <Form.Control required name={googleFormEntryIdMap["eventType"]} placeholder="event type" onChange={handleChange}/>
@@ -110,7 +116,10 @@ const OrderPage: React.FC = () => {
                 </Form.Group>
             ))}
         </fieldset>
-        <div className="d-grid gap-2">
+        </Accordion.Body>
+        </Accordion.Item>
+        </Accordion>
+        <div className="d-grid gap-2 mt-4">
           <Button variant="dark" type="submit">
             Submit
           </Button>

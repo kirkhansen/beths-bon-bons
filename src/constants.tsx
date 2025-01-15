@@ -12,9 +12,11 @@ export enum CakeBallStyles {
 
 // key is what we send to the form, value is what should be displayed to the user
 export enum CakeFlavors {
+    birthdayCakeBatter = "Birthday Cake Batter",
     deathByChocolate = "Death By Chocolate",
+    lemon = "Lemon",
+    redVelvet = "Red Velvet",
     veryVanilla = "Very Vanilla",
-    redVelvet = "Red Velvet"
 }
 
 export type BaseFormState = {
