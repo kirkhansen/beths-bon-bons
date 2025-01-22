@@ -12,5 +12,5 @@ body {
 
 a {
   /* Bootstrap's link-dark by default*/
-  color: RGBA(var(--bs-dark-rgb), var(--bs-link-opacity, 1)) !important
+  color: RGBA(var(--bs-dark-rgb), var(--bs-link-opacity, 1)) !important;
 }

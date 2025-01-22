@@ -6,11 +6,11 @@ const nextConfig: NextConfig = {
   images: {
     localPatterns: [
       {
-        pathname: '/assets/home_page_gallery/*',
-        search: '',
-      }
-    ]
-  }
+        pathname: "/assets/home_page_gallery/*",
+        search: "",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

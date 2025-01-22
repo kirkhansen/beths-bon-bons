@@ -8,7 +8,9 @@ const importAll = (r: __WebpackModuleApi.RequireContext): string[] => {
 
 const Home: React.FC = () => {
   // Array of image imported from directory
-  const images = importAll(require.context('../images/home_page_gallery', false, /\.(png|jpe?g|svg)$/));
+  const images = importAll(
+    require.context("../images/home_page_gallery", false, /\.(png|jpe?g|svg)$/),
+  );
 
   return (
     <div>
@@ -16,9 +18,9 @@ const Home: React.FC = () => {
         <div className="col-lg-8">
           <Carousel className="d-flex justify-content-center">
             {images.map((src, index) => (
-            <CarouselItem key={index}>
-              <Image src={src} alt={`Slide ${index}`} className="img-fluid"/>
-            </CarouselItem>
+              <CarouselItem key={index}>
+                <Image src={src} alt={`Slide ${index}`} className="img-fluid" />
+              </CarouselItem>
             ))}
           </Carousel>
         </div>

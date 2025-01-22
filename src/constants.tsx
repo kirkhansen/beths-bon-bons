@@ -1,39 +1,40 @@
-export const GOOGLE_FORM_URI = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdynSNJdglN23cmKY58j2Atio7nWYNoPNdyPOWrlKI-LnBTrw/formResponse"
+export const GOOGLE_FORM_URI =
+  "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdynSNJdglN23cmKY58j2Atio7nWYNoPNdyPOWrlKI-LnBTrw/formResponse";
 
 type PaymentMethod = "venmo" | "cash" | null;
 // type CakeBallStyle = "cakeBallTruffle" | "cakePop" | "upsideDownCakePop" | null;
 
 // key is what we send to the form, value is what should be displayed to the user
 export enum CakeBallStyles {
-    pop = "Cake Pop",
-    upsideDownPop = "Upside Down Cake Pop",
-    truffle = "Cake Ball Truffle",
+  pop = "Cake Pop",
+  upsideDownPop = "Upside Down Cake Pop",
+  truffle = "Cake Ball Truffle",
 }
 
 // key is what we send to the form, value is what should be displayed to the user
 export enum CakeFlavors {
-    birthdayCakeBatter = "Birthday Cake Batter",
-    deathByChocolate = "Death By Chocolate",
-    lemon = "Lemon",
-    redVelvet = "Red Velvet",
-    veryVanilla = "Very Vanilla",
+  birthdayCakeBatter = "Birthday Cake Batter",
+  deathByChocolate = "Death By Chocolate",
+  lemon = "Lemon",
+  redVelvet = "Red Velvet",
+  veryVanilla = "Very Vanilla",
 }
 
 export type BaseFormState = {
   fullName: string;
   email: string;
   eventDate: string;
-  pickupDatetime: string;  // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
-  referralSource: string,
-  paymentMethod: PaymentMethod,
-  eventType: string,
-  eventThemeDetails: string,
+  pickupDatetime: string; // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
+  referralSource: string;
+  paymentMethod: PaymentMethod;
+  eventType: string;
+  eventThemeDetails: string;
   cakeBallStyle?: CakeBallStyles;
-  deathByChocolate?: number,
-  veryVanilla?: string,
-  birthdayCakeBatter?: string,
-  redVelvet?: string,
-  lemon?: string,
+  deathByChocolate?: number;
+  veryVanilla?: string;
+  birthdayCakeBatter?: string;
+  redVelvet?: string;
+  lemon?: string;
 };
 
 // Define the GoogleFormEntryIdMap with the same keys as FormState, but with string values
@@ -56,9 +57,11 @@ export const googleFormEntryIdMap: GoogleFormEntryIdMap = {
   birthdayCakeBatter: "entry.680103830",
   redVelvet: "entry.1056584828",
   lemon: "entry.2026319349",
-}
+};
 
-export const defaultFormState:  { [K in keyof BaseFormState]: BaseFormState[K] } = {
+export const defaultFormState: {
+  [K in keyof BaseFormState]: BaseFormState[K];
+} = {
   fullName: "",
   email: "",
   eventDate: "",
@@ -70,8 +73,8 @@ export const defaultFormState:  { [K in keyof BaseFormState]: BaseFormState[K] }
 };
 
 export interface PostResponse {
-    success: boolean;
-    message: string;
+  success: boolean;
+  message: string;
 }
 
 export const email = "bethsbonbons@gmail.com";
