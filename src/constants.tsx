@@ -33,6 +33,7 @@ export type BaseFormState = {
   veryVanilla?: string,
   birthdayCakeBatter?: string,
   redVelvet?: string,
+  lemon?: string,
 };
 
 // Define the GoogleFormEntryIdMap with the same keys as FormState, but with string values
@@ -54,6 +55,7 @@ export const googleFormEntryIdMap: GoogleFormEntryIdMap = {
   veryVanilla: "entry.149604139",
   birthdayCakeBatter: "entry.680103830",
   redVelvet: "entry.1056584828",
+  lemon: "entry.2026319349",
 }
 
 export const defaultFormState:  { [K in keyof BaseFormState]: BaseFormState[K] } = {

@@ -13,6 +13,8 @@ const OrderPage: React.FC = () => {
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [validated, setValidated] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string>('');
+  const [referralSourceSelection, setReferralSourceSelection] = useState<string>("");
+  const [referralSourceOtherValue, setReferralSourceOtherValue] = useState<string>("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -20,6 +22,16 @@ const OrderPage: React.FC = () => {
     const { name, value } = e.target;
     setFormState({ ...formState, [name]: value });
   };
+
+  const handleReferralSourceChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setReferralSourceSelection(e.target.value);
+    if (e.target.value !== "Other") {
+      setReferralSourceOtherValue("");
+    }
+  };
+
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -61,9 +73,26 @@ const OrderPage: React.FC = () => {
             <Form.Text>Treats are good for 3-5 days at room temperature, and they are good up to two weeks in the refrigerator</Form.Text>
         </Form.Group>
         <Form.Group className="mb-3">
-          <FloatingLabel label="How did you hear about me?">
+          <Form.Label>How did you hear about me?</Form.Label>
+          <Form.Check type="radio" name={googleFormEntryIdMap["referralSource"]} label="Friend or Family" value="Friend or Family" onChange={handleReferralSourceChange} checked={referralSourceSelection === "Friend or Family"}></Form.Check>
+          <Form.Check type="radio" name={googleFormEntryIdMap["referralSource"]} label="Facebook" value="Facebook" onChange={handleReferralSourceChange} checked={referralSourceSelection === "Facebook"}></Form.Check>
+          {/* Puts the Other option inline with the control input */}
+          <div className="d-flex align-items-center mt-2">
+            <Form.Check type="radio" label="Other:" value="Other" onChange={handleReferralSourceChange} checked={referralSourceSelection === "Other"}></Form.Check>
+            <Form.Control 
+              type="text" 
+              value={referralSourceOtherValue} 
+              name={googleFormEntryIdMap["referralSource"]}  
+              onChange={(e) => setReferralSourceOtherValue(e.target.value)}
+              placeholder="Please specify"
+              disabled={referralSourceSelection !== "Other"}
+              required={referralSourceSelection === "Other"}
+              className="ms-4">
+            </Form.Control>
+          </div>
+          {/* <FloatingLabel label="How did you hear about me?">
             <Form.Control required name={googleFormEntryIdMap["referralSource"]} placeholder="Facebook" onChange={handleChange}/>
-          </FloatingLabel>
+          </FloatingLabel> */}
         </Form.Group>
         <Form.Group className="mb-3">
           <FloatingLabel label="Payment Preference">
@@ -105,7 +134,9 @@ const OrderPage: React.FC = () => {
         <fieldset className="border p-3 rounded">
             <legend className="text-center">Flavors by the dozen</legend>
             {/* Build up inputs for each flavor we have */}
-            {Object.entries(CakeFlavors).map(([key, value]) => (
+            {Object.entries(CakeFlavors)
+            .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+            .map(([key, value]) => (
                 <Form.Group key={key + '-form-group'} className="mb-3">
                     <InputGroup key={key + '-input-group'}>
                         <FloatingLabel key={key + '-label'} label={value}>
