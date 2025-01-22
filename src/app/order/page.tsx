@@ -155,6 +155,7 @@ const OrderPage: React.FC = () => {
                 onChange={(e) => setReferralSourceOtherValue(e.target.value)}
                 placeholder="Please specify"
                 disabled={referralSourceSelection !== "Other"}
+                hidden={referralSourceSelection !== "Other"}
                 required={referralSourceSelection === "Other"}
                 className="ms-4"
               ></Form.Control>
@@ -196,8 +197,8 @@ const OrderPage: React.FC = () => {
                       onChange={handleChange}
                     />
                     <Form.Text>
-                      Describe the decorations or theme you want. Please include
-                      as much detail possible, e.g., color, shape, characters,
+                      Describe the decorations or theme you want. <strong>Please include
+                      as much detail possible</strong>, e.g., color, shape, characters,
                       etc. You can send any inspirational photos to my{" "}
                       <a href={`mailto:${email}`}>email</a> to more closely
                       match your event!
@@ -250,6 +251,7 @@ const OrderPage: React.FC = () => {
                 </fieldset>
               </Accordion.Body>
             </Accordion.Item>
+            {/* End custom orders */}
           </Accordion>
           <div className="d-grid gap-2 mt-4">
             <Button variant="dark" type="submit">
