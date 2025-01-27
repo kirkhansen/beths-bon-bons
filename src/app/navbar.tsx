@@ -3,6 +3,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Link from "next/link";
 import siteLogoLg from "../images/site_logo_lg.png";
 import Image from "next/image";
+import Container from "react-bootstrap/Container";
 
 const MainNavBar: React.FC = () => {
   return (
@@ -21,17 +22,35 @@ const MainNavBar: React.FC = () => {
           </Link>
         </div>
       </div>
-      <Navbar>
-        {/* <Link className="navbar-brand" href="/"><Image src={siteLogo} alt="Beth's Bon Bons & Cake Pops"></Image></Link> */}
+      {/* <div className="d-flex align-items-center row mt-3" style={{"backgroundColor": "#fe9aa0", "height": "80px"}}>
+        <div className="col-3 col-lg-3 col-md-3 offset-md-0 offset-lg-2 offset-3">
+          <Link className="nav-link" href="/about">About</Link>
+        </div>
+        <div className="col-3 col-lg-4 col-md-3 offset-md-6 offset-lg-1">
+          <Link className="nav-link text-right" style={{"textAlign": "right"}} href="/order">Order</Link>
+        </div>
+      </div> */}
+      <Navbar expand="sm">
+        <Container className="navbar-container">
+          <Nav className="w-100 justify-content-between">
+            <Link className="nav-link nav-column" href="/about">About</Link>
+            <div className="divider"></div>
+            <Link className="nav-link nav-column" href="/order">Order</Link>
+          </Nav>
+        </Container>
+      </Navbar>
+
+      {/* <Navbar>
+        <Link className="navbar-brand" href="/about">About</Link>
         <Nav className="ms-auto">
-          <Link className="nav-item nav-link" href="/about">
+          {/* <Link className="nav-item nav-link" href="/about">
             About
-          </Link>
+          </Link> 
           <Link className="nav-item nav-link" href="/order">
             Order
           </Link>
         </Nav>
-      </Navbar>
+      </Navbar> */}
     </div>
   );
 };

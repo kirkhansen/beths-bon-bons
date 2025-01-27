@@ -107,13 +107,13 @@ const OrderPage: React.FC = () => {
             </FloatingLabel>
           </Form.Group>
           <Form.Group className="mb-3">
-            <FloatingLabel label="Date and Time of Pickup">
+            <FloatingLabel label="Date of Pickup">
               <Form.Control
                 required
-                name={googleFormEntryIdMap["pickupDatetime"]}
+                name={googleFormEntryIdMap["pickupDate"]}
                 placeholder="Date of Pickup"
                 onChange={handleChange}
-                type="datetime-local"
+                type="date"
               />
             </FloatingLabel>
             <Form.Text>

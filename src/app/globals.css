@@ -12,5 +12,34 @@ body {
 
 a {
   /* Bootstrap's link-dark by default*/
-  color: RGBA(var(--bs-dark-rgb), var(--bs-link-opacity, 1)) !important;
+  color: RGBA(var(--bs-dark-rgb), var(--bs-link-opacity, 1));
+}
+
+.navbar-container {
+  max-width: 65%;
+}
+
+.nav-column {
+  text-align: center;
+  background-color: #fe9aa0;
+  padding: 10px 15px;
+  width: 100%;
+  transition: background-color 0.3s ease, color 0.3 ease;
+}
+
+.nav-column:hover {
+  background-color: #323232;
+  color: white;
+}
+
+.nav-column.active, .nav-column:focus {
+  background-color: #323232;
+  color: white;
+}
+
+.divider {
+  width: 5px;
+  background-color: #ffffff; /* White vertical bar */
+  height: 50%; /* Adjust height of the divider */
+  align-self: center; /* Center the divider vertically */
 }

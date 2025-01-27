@@ -24,7 +24,7 @@ export type BaseFormState = {
   fullName: string;
   email: string;
   eventDate: string;
-  pickupDatetime: string; // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
+  pickupDate: string; // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
   referralSource: string;
   paymentMethod: PaymentMethod;
   eventType: string;
@@ -46,7 +46,7 @@ export const googleFormEntryIdMap: GoogleFormEntryIdMap = {
   fullName: "entry.269276840",
   email: "entry.1295339816",
   eventDate: "entry.895593470",
-  pickupDatetime: "entry.1460784367",
+  pickupDate: "entry.1460784367",
   referralSource: "entry.1913813112",
   paymentMethod: "entry.782188801",
   eventType: "entry.673855529",
@@ -65,7 +65,7 @@ export const defaultFormState: {
   fullName: "",
   email: "",
   eventDate: "",
-  pickupDatetime: "",
+  pickupDate: "",
   referralSource: "",
   paymentMethod: null,
   eventType: "",
