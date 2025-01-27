@@ -14,12 +14,12 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      <main className="d-flex justify-content-center row mt-5">
-        <div className="col-lg-8">
-          <Carousel className="d-flex justify-content-center">
+      <main className="d-flex row mt-3 justify-content-center align-items-center">
+        <div className="carousel-container">
+          <Carousel className="rounded-3">
             {images.map((src, index) => (
-              <CarouselItem key={index}>
-                <Image src={src} alt={`Slide ${index}`} className="img-fluid" />
+              <CarouselItem key={index} className="rounded-3">
+                <Image src={src} alt={`Slide ${index}`} className="img-fluid rounded-3" />
               </CarouselItem>
             ))}
           </Carousel>

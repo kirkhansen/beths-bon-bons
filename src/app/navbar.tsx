@@ -30,7 +30,7 @@ const MainNavBar: React.FC = () => {
           <Link className="nav-link text-right" style={{"textAlign": "right"}} href="/order">Order</Link>
         </div>
       </div> */}
-      <Navbar expand="sm">
+      <Navbar>
         <Container className="navbar-container">
           <Nav className="w-100 justify-content-between">
             <Link className="nav-link nav-column" href="/about">About</Link>
