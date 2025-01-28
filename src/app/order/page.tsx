@@ -6,26 +6,28 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import InputGroup from "react-bootstrap/InputGroup";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Spinner from "react-bootstrap/Spinner";
 import {
   email,
   defaultFormState,
   BaseFormState,
   CakeBallStyles,
   CakeFlavors,
-  GOOGLE_FORM_URI,
-  googleFormEntryIdMap,
-  GoogleFormEntryIdMap,
+  ORDER_FORM_URI,
 } from "../../constants";
-import { FloatingLabel } from "react-bootstrap";
 
 const OrderPage: React.FC = () => {
+  const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [validated, setValidated] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [referralSourceSelection, setReferralSourceSelection] =
     useState<string>("");
   const [referralSourceOtherValue, setReferralSourceOtherValue] =
     useState<string>("");
+  const [loading, setLoading] = useState(false); 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -43,42 +45,70 @@ const OrderPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const form = event.currentTarget;
+    setLoading(true);
+
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
-    } else {
-      setResponseMessage(
-        "Thanks for your order! An email was sent to {formState['email']} with your responses. If you don't recieve an email, please reach out on facebook or email.",
-      );
+      setErrorMessage("Please fill out all required fields correctly.");
+      setValidated(true);
+      setLoading(false);
+      return;
     }
-    setValidated(true);
+
+
+    // Construct FormData
+    const formData = new FormData(form);
+    // Add custom fields not bound to the form controls
+    if (referralSourceSelection === "Other") {
+      formData.set("referralSource", referralSourceOtherValue);
+    } else {
+      formData.set("referralSource", referralSourceSelection);
+    }
+
+    try {
+      const response = await fetch(ORDER_FORM_URI, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      setResponseMessage(
+        `Thanks for your order! An email was sent to ${formState.email} with your responses. If you don't receive an email, please reach out on Facebook or email.`
+      );
+      setErrorMessage("");
+      setValidated(false);
+      form.reset()
+    } catch (error) {
+      console.error(error instanceof Error ? error.message: "Unknown error");
+      setErrorMessage(
+        "Something went wrong while submitting your order. Please try again or contact us for assistance."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="row">
       <div className="col-lg-6 mx-auto">
-        {/* Thanks to CORS on google forms, I can't do this via react and fetch APIs. Boo. So, hidden iframe nonsense it is */}
-        <iframe
-          id="response-iframe"
-          name="response-iframe"
-          style={{ display: "none" }}
-        ></iframe>
         <Form
           noValidate
           validated={validated}
           onSubmit={handleSubmit}
           id="form"
-          target="response-iframe"
-          action={GOOGLE_FORM_URI}
           method="post"
         >
           <Form.Group className="mb-3">
             <FloatingLabel label="Full Name">
               <Form.Control
                 required
-                name={googleFormEntryIdMap["fullName"]}
+                name="fullName"
                 placeholder="John Doe"
                 onChange={handleChange}
               />
@@ -88,7 +118,7 @@ const OrderPage: React.FC = () => {
             <FloatingLabel label="Email Address">
               <Form.Control
                 required
-                name={googleFormEntryIdMap["email"]}
+                name="email"
                 placeholder="Email"
                 onChange={handleChange}
                 type="email"
@@ -99,10 +129,11 @@ const OrderPage: React.FC = () => {
             <FloatingLabel label="Date of Event">
               <Form.Control
                 required
-                name={googleFormEntryIdMap["eventDate"]}
+                name="eventDate"
                 placeholder="Date of Event"
                 onChange={handleChange}
                 type="date"
+                min={today}
               />
             </FloatingLabel>
           </Form.Group>
@@ -110,10 +141,11 @@ const OrderPage: React.FC = () => {
             <FloatingLabel label="Date of Pickup">
               <Form.Control
                 required
-                name={googleFormEntryIdMap["pickupDate"]}
+                name="pickupDate"
                 placeholder="Date of Pickup"
                 onChange={handleChange}
                 type="date"
+                min={today}
               />
             </FloatingLabel>
             <Form.Text>
@@ -124,16 +156,18 @@ const OrderPage: React.FC = () => {
           <Form.Group className="mb-3">
             <Form.Label>How did you hear about me?</Form.Label>
             <Form.Check
+              required
               type="radio"
-              name={googleFormEntryIdMap["referralSource"]}
+              name="referralSource"
               label="Friend or Family"
               value="Friend or Family"
               onChange={handleReferralSourceChange}
               checked={referralSourceSelection === "Friend or Family"}
             ></Form.Check>
             <Form.Check
+              required
               type="radio"
-              name={googleFormEntryIdMap["referralSource"]}
+              name="referralSource"
               label="Facebook"
               value="Facebook"
               onChange={handleReferralSourceChange}
@@ -142,6 +176,7 @@ const OrderPage: React.FC = () => {
             {/* Puts the Other option inline with the control input */}
             <div className="d-flex align-items-center mt-2">
               <Form.Check
+                required
                 type="radio"
                 label="Other:"
                 value="Other"
@@ -151,7 +186,7 @@ const OrderPage: React.FC = () => {
               <Form.Control
                 type="text"
                 value={referralSourceOtherValue}
-                name={googleFormEntryIdMap["referralSource"]}
+                name="referralSource"
                 onChange={(e) => setReferralSourceOtherValue(e.target.value)}
                 placeholder="Please specify"
                 disabled={referralSourceSelection !== "Other"}
@@ -160,13 +195,10 @@ const OrderPage: React.FC = () => {
                 className="ms-4"
               ></Form.Control>
             </div>
-            {/* <FloatingLabel label="How did you hear about me?">
-            <Form.Control required name={googleFormEntryIdMap["referralSource"]} placeholder="Facebook" onChange={handleChange}/>
-          </FloatingLabel> */}
           </Form.Group>
           <Form.Group className="mb-3">
             <FloatingLabel label="Payment Preference">
-              <Form.Select name={googleFormEntryIdMap["paymentMethod"]}>
+              <Form.Select name="paymentMethod">
                 <option value="venmo">Venmo</option>
                 <option value="cash">Cash</option>
               </Form.Select>
@@ -181,7 +213,7 @@ const OrderPage: React.FC = () => {
                   <FloatingLabel label="Event Type">
                     <Form.Control
                       required
-                      name={googleFormEntryIdMap["eventType"]}
+                      name="eventType"
                       placeholder="event type"
                       onChange={handleChange}
                     />
@@ -192,7 +224,7 @@ const OrderPage: React.FC = () => {
                   <FloatingLabel label="Event Theme Details">
                     <Form.Control
                       required
-                      name={googleFormEntryIdMap["eventThemeDetails"]}
+                      name="eventThemeDetails"
                       placeholder="details"
                       onChange={handleChange}
                     />
@@ -209,7 +241,7 @@ const OrderPage: React.FC = () => {
                   <FloatingLabel label="Select your style">
                     <Form.Select
                       required
-                      name={googleFormEntryIdMap["cakeBallStyle"]}
+                      name="cakeBallStyle"
                     >
                       {Object.entries(CakeBallStyles).map(([key, value]) => (
                         <option key={key} value={key}>
@@ -231,11 +263,7 @@ const OrderPage: React.FC = () => {
                           <FloatingLabel key={key + "-label"} label={value}>
                             <Form.Control
                               key={key}
-                              name={
-                                googleFormEntryIdMap[
-                                  key as keyof GoogleFormEntryIdMap
-                                ]
-                              }
+                              name={key}
                               placeholder={key}
                               onChange={handleChange}
                               type="number"
@@ -254,11 +282,25 @@ const OrderPage: React.FC = () => {
             {/* End custom orders */}
           </Accordion>
           <div className="d-grid gap-2 mt-4">
-            <Button variant="dark" type="submit">
-              Submit
+            <Button variant="dark" type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                  />
+                  Submitting...
+                  </>
+              ) : ("Submit"
+              )}
             </Button>
           </div>
         </Form>
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
         {responseMessage && <Alert variant="success">{responseMessage}</Alert>}
       </div>
     </div>
