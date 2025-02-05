@@ -28,6 +28,7 @@ const OrderPage: React.FC = () => {
   const [referralSourceOtherValue, setReferralSourceOtherValue] =
     useState<string>("");
   const [loading, setLoading] = useState(false); 
+  const [activeKey, setActiveKey] = useState(null); 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -50,6 +51,12 @@ const OrderPage: React.FC = () => {
     const form = event.currentTarget;
     setLoading(true);
 
+    if(activeKey === null) {
+      setErrorMessage("Please open one of the order form sections to submit before submitting.");
+      setLoading(false);
+      return;
+    }
+
     if (form.checkValidity() === false) {
       event.stopPropagation();
       setErrorMessage("Please fill out all required fields correctly.");
@@ -58,8 +65,6 @@ const OrderPage: React.FC = () => {
       return;
     }
 
-
-    // Construct FormData
     const formData = new FormData(form);
     // Add custom fields not bound to the form controls
     if (referralSourceSelection === "Other") {
@@ -204,7 +209,7 @@ const OrderPage: React.FC = () => {
               </Form.Select>
             </FloatingLabel>
           </Form.Group>
-          <Accordion flush>
+          <Accordion flush activeKey={activeKey} onSelect={(eventKey) => setActiveKey(eventKey)}>
             {/* Custom orders */}
             <Accordion.Item eventKey="0">
               <Accordion.Header>Custom Order...</Accordion.Header>
@@ -212,7 +217,7 @@ const OrderPage: React.FC = () => {
                 <Form.Group className="mb-3">
                   <FloatingLabel label="Event Type">
                     <Form.Control
-                      required
+                      required={activeKey === "0"}
                       name="eventType"
                       placeholder="event type"
                       onChange={handleChange}
@@ -223,7 +228,7 @@ const OrderPage: React.FC = () => {
                 <Form.Group className="mb-3">
                   <FloatingLabel label="Event Theme Details">
                     <Form.Control
-                      required
+                      required={activeKey === "0"}
                       name="eventThemeDetails"
                       placeholder="details"
                       onChange={handleChange}
@@ -240,7 +245,7 @@ const OrderPage: React.FC = () => {
                 <Form.Group className="mb-3">
                   <FloatingLabel label="Select your style">
                     <Form.Select
-                      required
+                      required={activeKey === "0"}
                       name="cakeBallStyle"
                     >
                       {Object.entries(CakeBallStyles).map(([key, value]) => (

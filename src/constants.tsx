@@ -1,5 +1,5 @@
-export const GOOGLE_FORM_URI =
-  "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdynSNJdglN23cmKY58j2Atio7nWYNoPNdyPOWrlKI-LnBTrw/formResponse";
+export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbwPizDSxrTjv0AkL6AtUmYNj2XIsjsxa_XmbNuQP12wucTgHQsG-tfP5Kr9Zgj1Keya/exec";
+export const MAIL_CHIMP_URI = "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
 type PaymentMethod = "venmo" | "cash" | null;
 // type CakeBallStyle = "cakeBallTruffle" | "cakePop" | "upsideDownCakePop" | null;

@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
     <footer>
       <Row>
         <Col className="float-start">
-          © 2024 Beth&lsquo;s Bon Bons & Cake Pops LLC
+          © 2024 Beth&lsquo;s Bon Bons & Cake Pops, LLC
         </Col>
         <Col>
           <ListGroup horizontal className="float-end">

@@ -2,6 +2,8 @@ import Image from "next/image";
 import Carousel from "react-bootstrap/Carousel";
 import CarouselItem from "react-bootstrap/CarouselItem";
 
+import Mailchimp from "@/components/mailchimp";
+
 const importAll = (r: __WebpackModuleApi.RequireContext): string[] => {
   return r.keys().map((key) => r(key).default);
 };
@@ -23,6 +25,11 @@ const Home: React.FC = () => {
               </CarouselItem>
             ))}
           </Carousel>
+        </div>
+        <div className="row">
+          <div className="col-10 col-md-6 col-lg-3 mx-auto mt-4">
+            <Mailchimp />
+          </div>
         </div>
       </main>
     </div>
