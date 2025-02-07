@@ -10,7 +10,7 @@ enableRobotsTXT = true
 
 [languages]
   [languages.en]
-    title = "Beth's Bon Bon's"
+    title = "Beth's Bon Bons"
     weight = 1
     contentDir = "content/en"
 
@@ -20,13 +20,14 @@ enableRobotsTXT = true
   filename = "sitemap.xml"
 
 [params]
-  text_color = ""
   author = ""
   favicon = ""
+  text_color = "black"
   site_logo = "img/site_logo.jpg"
   description = "The last theme you'll ever need. Maybe."
   # choose a background color from any on this page: http://tachyons.io/docs/themes/skins/ and preface it with "bg-"
-  background_color_class = "bg-black"
+  background_color_class = "bg-mid-gray"
+  body_classes = "bg-white"
   recent_posts_number = 10
 
 [[params.ananke_socials]]

@@ -1,0 +1,70 @@
+:root {
+  /* --background: #ffffff; */
+  --background: #fef0f1;
+  --foreground: #595959;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-primary);
+}
+
+a {
+  /* Bootstrap's link-dark by default*/
+  color: RGBA(var(--bs-dark-rgb), var(--bs-link-opacity, 1));
+}
+
+/* Large screens (above 768px) */
+@media (min-width: 769px) {
+  .carousel-container {
+    max-width: 60%;
+    margin: auto;
+  }
+
+  .navbar-container {
+    max-width: 62%;
+  }
+
+}
+
+/* Small screens (up to 768px) */
+@media(max-width: 768px) {
+  .carousel-container {
+    max-width: 95%;
+  }
+
+  .navbar-container {
+    max-width: 100%;
+  }
+}
+
+.nav-column {
+  text-align: center;
+  background-color: #fe9aa0;
+  padding: 10px 15px;
+  width: 100%;
+  transition: background-color 0.3s ease, color 0.3 ease;
+  flex: 1
+}
+
+.nav-column:hover {
+  background-color: #212529;
+  color: white;
+}
+
+.nav-column.active, .nav-column:focus {
+  background-color: #212529;
+  color: white;
+}
+
+.divider {
+  width: 2.1px;
+  background-color: #ffffff;
+  height: 50%; 
+  align-self: center; /* Center the divider vertically */
+}
+
+.carousel {
+  overflow: hidden;
+}
