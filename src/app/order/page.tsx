@@ -83,14 +83,19 @@ const OrderPage: React.FC = () => {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
 
+      const data = await response.json();
+      if (data.result === "error") {
+        throw new Error (`Error: ${data.msg}`)
+      }
+
       setResponseMessage(
-        `Thanks for your order! An email was sent to ${formState.email} with your responses. If you don't receive an email, please reach out on Facebook or email.`
+        `Thanks for your order! An email was sent to ${formState.email} with your responses. If you don't receive an email in the next few minutes, please reach out on Facebook or email.`
       );
       setErrorMessage("");
       setValidated(false);
       form.reset()
     } catch (error) {
-      console.error(error instanceof Error ? error.message: "Unknown error");
+      console.log(error instanceof Error ? error.message: "Unknown error");
       setErrorMessage(
         "Something went wrong while submitting your order. Please try again or contact us for assistance."
       );
