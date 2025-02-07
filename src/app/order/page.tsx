@@ -16,6 +16,7 @@ import {
   CakeFlavors,
   ORDER_FORM_URI,
 } from "../../constants";
+import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -28,7 +29,7 @@ const OrderPage: React.FC = () => {
   const [referralSourceOtherValue, setReferralSourceOtherValue] =
     useState<string>("");
   const [loading, setLoading] = useState(false); 
-  const [activeKey, setActiveKey] = useState(null); 
+  const [activeKey, setActiveKey] = useState<AccordionEventKey | null>(null); 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

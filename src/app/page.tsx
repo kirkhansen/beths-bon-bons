@@ -27,7 +27,7 @@ const Home: React.FC = () => {
           </Carousel>
         </div>
         <div className="row">
-          <div className="col-10 col-md-6 col-lg-3 mx-auto mt-4">
+          <div className="col-10 col-md-6 col-lg-5 mx-auto mt-4" style={{width: "345px"}}>
             <Mailchimp />
           </div>
         </div>
