@@ -1,4 +1,4 @@
-export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbwUynmgA-PbAmqyccJ3MCSTltt4newFc5svYQ0XbMnwEPkPCGqHUs6VqN5UfpriD4DH/exec";
+export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbxxmv8anFiWrxxuErEGi9h-szFw_BYg4ySX7FZWa8m5ACCUIIbuywgk20n1dmmVGmF-3g/exec";
 export const MAIL_CHIMP_URI = "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
 type PaymentMethod = "venmo" | "cash" | null;
