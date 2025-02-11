@@ -25,6 +25,8 @@ const MainNavBar: React.FC = () => {
             <Link className="nav-link nav-column" href="/about">About</Link>
             <div className="divider"></div>
             <Link className="nav-link nav-column" href="/order">Order</Link>
+            <div className="divider"></div>
+            <Link className="nav-link nav-column" href="/gallery">Gallery</Link>
           </Nav>
         </Container>
       </Navbar>
