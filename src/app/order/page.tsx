@@ -279,6 +279,7 @@ const OrderPage: React.FC = () => {
                               onChange={handleChange}
                               type="number"
                               min="0"
+                              step="0.5"
                             />
                           </FloatingLabel>
                           <InputGroup.Text key={key + "input-group-text"}>
