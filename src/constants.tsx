@@ -1,4 +1,4 @@
-export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbxxmv8anFiWrxxuErEGi9h-szFw_BYg4ySX7FZWa8m5ACCUIIbuywgk20n1dmmVGmF-3g/exec";
+export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbxx3cWIwwBe4EsFcvG3FswcyULmMtxh2KQNnrtFIDB_MYlqKpbcGVFV2PuJ_YQNSug/exec";
 export const MAIL_CHIMP_URI = "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
 type PaymentMethod = "venmo" | "cash" | null;
@@ -56,3 +56,14 @@ export interface PostResponse {
 }
 
 export const email = "bethsbonbons@gmail.com";
+
+
+export const addOns = [
+  {"name": "Bon Bons", "unit": "Dozen", "price": "15"},
+  {"name": "Coffee Bites", "unit": "12 Ounces", "price": "10"},
+  {"name": "Custom Chocolate Bars", "unit": "Single", "price": "5"},
+  {"name": "Chocolate Oreos", "unit": "Dozen", "price": "20"},
+  {"name": "Golden Oreos", "unit": "Dozen", "price": "20"},
+  {"name": "Pretzel Rods", "unit": "Dozen", "price": "18"},
+  {"name": "S'mores Bars", "unit": "Single", "price": "4"},
+];

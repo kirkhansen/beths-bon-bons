@@ -9,6 +9,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Spinner from "react-bootstrap/Spinner";
 import {
+  addOns,
   email,
   defaultFormState,
   BaseFormState,
@@ -51,12 +52,6 @@ const OrderPage: React.FC = () => {
     event.preventDefault();
     const form = event.currentTarget;
     setLoading(true);
-
-    if(activeKey === null) {
-      setErrorMessage("Please open one of the order form sections to submit before submitting.");
-      setLoading(false);
-      return;
-    }
 
     if (form.checkValidity() === false) {
       event.stopPropagation();
@@ -293,6 +288,26 @@ const OrderPage: React.FC = () => {
             </Accordion.Item>
             {/* End custom orders */}
           </Accordion>
+          <h3 className="text-center mt-3">Add-Ons</h3>
+          {addOns.map((item) => (
+            <Form.Group key={item["name"]} className="mb-2">
+              <InputGroup key={item + "-optional-input-group"}>
+                <FloatingLabel key={item + "-label"} label={item["name"]}>
+                <Form.Control
+                  key={item + "-add-ons"}
+                  name={item["name"]}
+                  placeholder={item["name"]}
+                  onChange={handleChange}
+                  type="number"
+                  min="0"
+                />
+                </FloatingLabel>
+                <InputGroup.Text key={item + "input-group-text"} style={{width: "125px"}} className="text-center">
+                  ${item["price"]}/{item["unit"]}
+                </InputGroup.Text>
+              </InputGroup>
+            </Form.Group>
+          ))}
           <div className="d-grid gap-2 mt-4">
             <Button variant="dark" type="submit" disabled={loading}>
               {loading ? (
