@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useRef} from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -31,6 +31,7 @@ const OrderPage: React.FC = () => {
     useState<string>("");
   const [loading, setLoading] = useState(false); 
   const [activeKey, setActiveKey] = useState<AccordionEventKey | null>(null); 
+  const inputRefs = useRef<Record<string, React.RefObject<HTMLInputElement | null>>>({});
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -210,7 +211,7 @@ const OrderPage: React.FC = () => {
               </Form.Select>
             </FloatingLabel>
           </Form.Group>
-          <Accordion flush activeKey={activeKey} onSelect={(eventKey) => setActiveKey(eventKey)}>
+          <Accordion flush activeKey={activeKey} onSelect={(eventKey) => setActiveKey(eventKey)} className="order-accordion">
             {/* Custom orders */}
             <Accordion.Item eventKey="0">
               <Accordion.Header>Custom Order...</Accordion.Header>
@@ -262,13 +263,17 @@ const OrderPage: React.FC = () => {
                   <legend className="text-center">Flavors by the dozen</legend>
                   {/* Build up inputs for each flavor we have */}
                   {Object.entries(CakeFlavors)
-                    .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-                    .map(([key, value]) => (
+                    .map(([key, value]) => {
+                      if (!inputRefs.current[key]) {
+                        inputRefs.current[key] = React.createRef();
+                      }
+                      return (
                       <Form.Group key={key + "-form-group"} className="mb-3">
                         <InputGroup key={key + "-input-group"}>
                           <FloatingLabel key={key + "-label"} label={value}>
                             <Form.Control
                               key={key}
+                              ref={inputRefs.current[key]}
                               name={key}
                               placeholder={key}
                               onChange={handleChange}
@@ -277,24 +282,33 @@ const OrderPage: React.FC = () => {
                               step="0.5"
                             />
                           </FloatingLabel>
-                          <InputGroup.Text key={key + "input-group-text"}>
+                          <InputGroup.Text
+                            key={key + "input-group-text"}
+                            style={{ cursor: "pointer"}}
+                            onClick={() => inputRefs.current[key]?.current?.focus()}
+                          >
                             Dozen
                           </InputGroup.Text>
                         </InputGroup>
                       </Form.Group>
-                    ))}
+                    )})}
                 </fieldset>
               </Accordion.Body>
             </Accordion.Item>
             {/* End custom orders */}
           </Accordion>
           <h3 className="text-center mt-3">Add-Ons</h3>
-          {addOns.map((item) => (
+          {addOns.map((item) => {
+            if (!inputRefs.current[item.name]) {
+              inputRefs.current[item.name] = React.createRef();
+            }
+            return (
             <Form.Group key={item["name"]} className="mb-2">
               <InputGroup key={item + "-optional-input-group"}>
                 <FloatingLabel key={item + "-label"} label={item["name"]}>
                 <Form.Control
                   key={item + "-add-ons"}
+                  ref={inputRefs.current[item.name]}
                   name={item["name"]}
                   placeholder={item["name"]}
                   onChange={handleChange}
@@ -302,12 +316,17 @@ const OrderPage: React.FC = () => {
                   min="0"
                 />
                 </FloatingLabel>
-                <InputGroup.Text key={item + "input-group-text"} style={{width: "125px"}} className="text-center">
-                  ${item["price"]}/{item["unit"]}
-                </InputGroup.Text>
+                <InputGroup.Text
+                  key={item + "input-group-text"}
+                  style={{width: "100px"}}
+                  className="text-center"
+                  onClick={() => inputRefs.current[item.name]?.current?.focus()}
+                >
+                   {item["unit"]}
+                 </InputGroup.Text>
               </InputGroup>
             </Form.Group>
-          ))}
+          )})}
           <div className="d-grid gap-2 mt-4">
             <Button variant="dark" type="submit" disabled={loading}>
               {loading ? (
