@@ -185,6 +185,7 @@ const OrderPage: React.FC = () => {
               <Form.Check
                 required
                 type="radio"
+                name="referralSource"
                 label="Other:"
                 value="Other"
                 onChange={handleReferralSourceChange}
