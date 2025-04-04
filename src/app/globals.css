@@ -69,6 +69,6 @@ a {
   overflow: hidden;
 }
 
-.order-accordion .accordion-item .accordion-header .accordion-button {
+.order-accordion .custom-accordion-item .accordion-header .accordion-button {
   background-color: #fe9aa0;
 }

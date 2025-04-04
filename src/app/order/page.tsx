@@ -16,6 +16,7 @@ import {
   CakeBallStyles,
   CakeFlavors,
   ORDER_FORM_URI,
+  DanceRecitalBoxFlavors,
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 
@@ -32,12 +33,17 @@ const OrderPage: React.FC = () => {
   const [loading, setLoading] = useState(false); 
   const [activeKey, setActiveKey] = useState<AccordionEventKey | null>(null); 
   const inputRefs = useRef<Record<string, React.RefObject<HTMLInputElement | null>>>({});
+  const [boxCounts, setBoxCounts] = useState<{ [key: string]: number }>({});
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormState({ ...formState, [name]: value });
+      setBoxCounts((prev) => ({
+        ...prev,
+        [name]: parseInt(value || "0", 10),
+      }));
   };
 
   const handleReferralSourceChange = (
@@ -214,7 +220,7 @@ const OrderPage: React.FC = () => {
           </Form.Group>
           <Accordion flush activeKey={activeKey} onSelect={(eventKey) => setActiveKey(eventKey)} className="order-accordion">
             {/* Custom orders */}
-            <Accordion.Item eventKey="0">
+            <Accordion.Item eventKey="0" className="custom-accordion-item">
               <Accordion.Header>Custom Order...</Accordion.Header>
               <Accordion.Body>
                 <Form.Group className="mb-3">
@@ -297,6 +303,43 @@ const OrderPage: React.FC = () => {
               </Accordion.Body>
             </Accordion.Item>
             {/* End custom orders */}
+            {/* Dance Recital Boxes */}
+            <Accordion.Item eventKey="1">
+              <Accordion.Header>Dance Recital Boxes...</Accordion.Header>
+              <Accordion.Body>
+                    {Object.entries(DanceRecitalBoxFlavors)
+                    .map(([key, value]) => {
+                      if (!inputRefs.current[key]) {
+                        inputRefs.current[key] = React.createRef();
+                      }
+                      return (
+                      <Form.Group key={key + "-form-group"} className="mb-3">
+                        <InputGroup key={key + "-input-group"}>
+                          <FloatingLabel key={key + "-label"} label={value}>
+                            <Form.Control
+                              key={key}
+                              ref={inputRefs.current[key]}
+                              name={key}
+                              placeholder={key}
+                              onChange={handleChange}
+                              type="number"
+                              min="0"
+                              step="1"
+                            />
+                          </FloatingLabel>
+                          <InputGroup.Text
+                            key={key + "input-group-text"}
+                            style={{ cursor: "pointer", width:"70px", justifyContent: "center"}}
+                            onClick={() => inputRefs.current[key]?.current?.focus()}
+                          >
+                            {(boxCounts[key] ?? 0) === 1 ? "Box" : "Boxes"}
+                          </InputGroup.Text>
+                        </InputGroup>
+                      </Form.Group>
+                    )})}
+              </Accordion.Body>
+            </Accordion.Item>
+            {/* End Dance Recital Boxes*/}
           </Accordion>
           <h3 className="text-center mt-3">Add-Ons</h3>
           {addOns.map((item) => {

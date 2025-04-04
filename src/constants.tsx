@@ -1,4 +1,4 @@
-export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbxZWdxxp-SY6qhVFd8JvtYgQacsNPDxOTGvNoIbqGM4CBw6OB3AOck1k0awNDDjk26-PQ/exec"
+export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbxRZSAsUw_AUzXbCbf3qdK5QOkQduqlqpUim5rVhTgKD1THoYFxE5RgkWKIyhiYx_GhwA/exec"
 export const MAIL_CHIMP_URI = "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
 type PaymentMethod = "venmo" | "cash" | null;
@@ -20,6 +20,11 @@ export enum CakeFlavors {
   strawberry = "Strawberry",
   veryVanilla = "Very Vanilla",
   other = "Other",
+}
+
+export enum DanceRecitalBoxFlavors {
+  danceRecitalBoxBirthdayCakeBatter = "Birthday Cake Batter",
+  danceRecitalBoxDeathByChocolate = "Death By Chocolate",
 }
 
 export type BaseFormState = {
