@@ -1,4 +1,4 @@
-export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbxRZSAsUw_AUzXbCbf3qdK5QOkQduqlqpUim5rVhTgKD1THoYFxE5RgkWKIyhiYx_GhwA/exec"
+export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbxwBf-0jh8eItauRhCbhrTmBAyMiLisGdDUyexSiE9ManisZ_A6mdaVXeqpJfjiFB5NlA/exec"
 export const MAIL_CHIMP_URI = "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
 type PaymentMethod = "venmo" | "cash" | null;
@@ -30,6 +30,7 @@ export enum DanceRecitalBoxFlavors {
 export type BaseFormState = {
   fullName: string;
   email: string;
+  phone: string;
   eventDate: string;
   pickupDate: string; // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
   referralSource: string;
@@ -42,6 +43,7 @@ export type BaseFormState = {
   birthdayCakeBatter?: string;
   redVelvet?: string;
   lemon?: string;
+  danceStudio?: string;
 };
 
 export const defaultFormState: {
@@ -49,12 +51,14 @@ export const defaultFormState: {
 } = {
   fullName: "",
   email: "",
+  phone: "",
   eventDate: "",
   pickupDate: "",
   referralSource: "",
   paymentMethod: null,
   eventType: "",
   eventThemeDetails: "",
+  danceStudio: "",
 };
 
 export interface PostResponse {
