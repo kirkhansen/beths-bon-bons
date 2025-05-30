@@ -23,6 +23,7 @@ import {
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 import { isPossiblePhoneNumber } from "react-phone-number-input";
+import { OrderSummary } from "./order_types";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -39,8 +40,9 @@ const OrderPage: React.FC = () => {
   const inputRefs = useRef<Record<string, React.RefObject<HTMLInputElement | null>>>({});
   const [boxCounts, setBoxCounts] = useState<{ [key: string]: number }>({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [orderSummary, setOrderSummary] = useState<any>({});
-  const phoneInputRef = useRef(null);
+  const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
+  const phoneInputRef = useRef<HTMLDivElement | null>(null);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -63,7 +65,7 @@ const OrderPage: React.FC = () => {
   };
 
   // This is dumb, but the react-phone-number-input/input component expects a value to get sent to onChange, not the full form data event, so here we are.
-  const handlePhoneChange = (value) => {
+  const handlePhoneChange = (value: string | undefined) => {
       const isValid = value ? isPossiblePhoneNumber(value, 'US') : true;
   
       // Set custom validity on the actual input element
@@ -73,22 +75,27 @@ const OrderPage: React.FC = () => {
           inputElement.setCustomValidity(isValid ? '' : 'Please enter a valid phone number');
         }
       }
-    handleChange({ target: { name: 'phone', value: value || '' } });
+      setFormState({ ...formState, ["phone"]: value || ''});
   };
 
   const generateOrderSummary = (formData: FormData) => {
-    const summary: any = {
+    const summary: OrderSummary = {
       customerInfo: {
-        fullName: formData.get("fullName"),
-        email: formData.get("email"),
-        phone: formData.get("phone"),
-        eventDate: formData.get("eventDate"),
-        pickupDate: formData.get("pickupDate"),
-        paymentMethod: formData.get("paymentMethod"),
+        fullName: formData.get("fullName") as string | null,
+        email: formData.get("email") as string | null,
+        phone: formData.get("phone") as string | null,
+        eventDate: formData.get("eventDate") as string | null,
+        pickupDate: formData.get("pickupDate") as string | null,
+        paymentMethod: formData.get("paymentMethod") as string | null,
       },
-      customOrder: {},
+      customOrder: {
+        eventType: null,
+        eventThemeDetails: null,
+        cakeBallStyle: null,
+        flavors: {},
+      },
       danceRecital: {
-        danceStudio: formData.get("danceStudio"),
+        danceStudio: formData.get("danceStudio") as string | null,
         boxes: {},
       },
       addOns: {},
@@ -103,9 +110,9 @@ const OrderPage: React.FC = () => {
     // Custom order details
     if (activeKey === "0") {
       summary.customOrder = {
-        eventType: formData.get("eventType"),
-        eventThemeDetails: formData.get("eventThemeDetails"),
-        cakeBallStyle: formData.get("cakeBallStyle"),
+        eventType: formData.get("eventType") as string | null,
+        eventThemeDetails: formData.get("eventThemeDetails") as string | null,
+        cakeBallStyle: formData.get("cakeBallStyle") as string | null,
         flavors: {}
       };
 
@@ -553,6 +560,7 @@ const OrderPage: React.FC = () => {
         {responseMessage && <Alert variant="success">{responseMessage}</Alert>}
 
         {/* Order Confirmation Modal */}
+        {orderSummary && (
         <Modal show={showConfirmModal} onHide={cancelOrder} size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Order Confirmation</Modal.Title>
@@ -598,7 +606,7 @@ const OrderPage: React.FC = () => {
 
                 <h5>Cake Pops</h5>
                 <ListGroup className="mb-3">
-                  {Object.entries(orderSummary.customOrder?.flavors || {}).map(([key, flavor]: [string, any]) => (
+                  {Object.entries(orderSummary.customOrder?.flavors || {}).map(([key, flavor]) => (
                     <ListGroup.Item key={key} className="d-flex justify-content-between align-items-center">
                       <span><strong>{flavor.name}:</strong> {flavor.dozens} dozen</span>
                       <span className="badge bg-primary rounded-pill">
@@ -618,7 +626,7 @@ const OrderPage: React.FC = () => {
                   <ListGroup.Item>
                     <strong>Dance Studio:</strong> {orderSummary.danceRecital.danceStudio}
                   </ListGroup.Item>
-                  {Object.entries(orderSummary.danceRecital.boxes || {}).map(([key, box]: [string, any]) => (
+                  {Object.entries(orderSummary.danceRecital.boxes || {}).map(([key, box]) => (
                     <ListGroup.Item key={key}>
                       <strong>{box.name}:</strong> {box.boxes} {box.boxes === 1 ? 'box' : 'boxes'}
                     </ListGroup.Item>
@@ -632,7 +640,7 @@ const OrderPage: React.FC = () => {
               <>
                 <h5>Add-Ons</h5>
                 <ListGroup className="mb-3">
-                  {Object.entries(orderSummary.addOns || {}).map(([key, addon]: [string, any]) => {
+                  {Object.entries(orderSummary.addOns || {}).map(([key, addon]) => {
                     let displayText = `${addon.quantity} ${addon.unit.toLowerCase()}`;
                     
                     if (addon.unit.toLowerCase() === 'single') {
@@ -708,6 +716,7 @@ const OrderPage: React.FC = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+        )}
       </div>
     </div>
   );
