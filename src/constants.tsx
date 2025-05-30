@@ -30,6 +30,7 @@ export enum DanceRecitalBoxFlavors {
 export type BaseFormState = {
   fullName: string;
   email: string;
+  phone: string;
   eventDate: string;
   pickupDate: string; // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
   referralSource: string;
@@ -49,6 +50,7 @@ export const defaultFormState: {
 } = {
   fullName: "",
   email: "",
+  phone: "",
   eventDate: "",
   pickupDate: "",
   referralSource: "",

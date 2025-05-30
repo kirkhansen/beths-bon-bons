@@ -8,6 +8,9 @@ import Alert from "react-bootstrap/Alert";
 import InputGroup from "react-bootstrap/InputGroup";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Spinner from "react-bootstrap/Spinner";
+import Modal from "react-bootstrap/Modal";
+import ListGroup from "react-bootstrap/ListGroup";
+import PhoneInput from 'react-phone-number-input/input'
 import {
   addOns,
   email,
@@ -19,6 +22,7 @@ import {
   DanceRecitalBoxFlavors,
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
+import { isPossiblePhoneNumber } from "react-phone-number-input";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -34,6 +38,9 @@ const OrderPage: React.FC = () => {
   const [activeKey, setActiveKey] = useState<AccordionEventKey | null>(null); 
   const inputRefs = useRef<Record<string, React.RefObject<HTMLInputElement | null>>>({});
   const [boxCounts, setBoxCounts] = useState<{ [key: string]: number }>({});
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [orderSummary, setOrderSummary] = useState<any>({});
+  const phoneInputRef = useRef(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -55,20 +62,137 @@ const OrderPage: React.FC = () => {
     }
   };
 
+  // This is dumb, but the react-phone-number-input/input component expects a value to get sent to onChange, not the full form data event, so here we are.
+  const handlePhoneChange = (value) => {
+      const isValid = value ? isPossiblePhoneNumber(value, 'US') : true;
+  
+      // Set custom validity on the actual input element
+      if (phoneInputRef.current) {
+        const inputElement = phoneInputRef.current.querySelector('input');
+        if (inputElement) {
+          inputElement.setCustomValidity(isValid ? '' : 'Please enter a valid phone number');
+        }
+      }
+    handleChange({ target: { name: 'phone', value: value || '' } });
+  };
+
+  const generateOrderSummary = (formData: FormData) => {
+    const summary: any = {
+      customerInfo: {
+        fullName: formData.get("fullName"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        eventDate: formData.get("eventDate"),
+        pickupDate: formData.get("pickupDate"),
+        paymentMethod: formData.get("paymentMethod"),
+      },
+      customOrder: {},
+      danceRecitalBoxes: {},
+      addOns: {},
+      totals: {
+        totalCakePops: 0,
+        totalBoxes: 0,
+        totalAddOnPieces: 0,
+        grandTotalPieces: 0,
+      }
+    };
+
+    // Custom order details
+    if (activeKey === "0") {
+      summary.customOrder = {
+        eventType: formData.get("eventType"),
+        eventThemeDetails: formData.get("eventThemeDetails"),
+        cakeBallStyle: formData.get("cakeBallStyle"),
+        flavors: {}
+      };
+
+      // Process cake flavors
+      Object.entries(CakeFlavors).forEach(([key, value]) => {
+        const dozens = parseFloat(formData.get(key) as string || "0");
+        if (dozens > 0) {
+          const cakePops = dozens * 12;
+          summary.customOrder.flavors[key] = {
+            name: value,
+            dozens: dozens,
+            cakePops: cakePops
+          };
+          summary.totals.totalCakePops += cakePops;
+        }
+      });
+    }
+
+    // Dance recital boxes
+    if (activeKey === "1") {
+      Object.entries(DanceRecitalBoxFlavors).forEach(([key, value]) => {
+        const boxes = parseInt(formData.get(key) as string || "0");
+        if (boxes > 0) {
+          summary.danceRecitalBoxes[key] = {
+            name: value,
+            boxes: boxes
+          };
+          summary.totals.totalBoxes += boxes;
+        }
+      });
+    }
+
+    // Add-ons
+    addOns.forEach((item) => {
+      const quantity = parseInt(formData.get(item.name) as string || "0");
+      if (quantity > 0) {
+        let pieces = quantity;
+        // Calculate pieces based on unit type
+        if (item.unit.toLowerCase().includes('dozen')) {
+          pieces = quantity * 12;
+        }
+        
+        summary.addOns[item.name] = {
+          name: item.name,
+          quantity: quantity,
+          unit: item.unit,
+          pieces: pieces
+        };
+        summary.totals.totalAddOnPieces += pieces;
+      }
+    });
+
+    // Calculate grand total pieces
+    summary.totals.grandTotalPieces = summary.totals.totalCakePops + summary.totals.totalAddOnPieces;
+
+    return summary;
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    setLoading(true);
+    const formData = new FormData(form);
 
     if (form.checkValidity() === false) {
       event.stopPropagation();
       setErrorMessage("Please fill out all required fields correctly.");
       setValidated(true);
-      setLoading(false);
       return;
     }
 
+    // Add custom fields not bound to the form controls
+    if (referralSourceSelection === "Other") {
+      formData.set("referralSource", referralSourceOtherValue);
+    } else {
+      formData.set("referralSource", referralSourceSelection);
+    }
+
+    // Generate order summary and show confirmation modal
+    const summary = generateOrderSummary(formData);
+    setOrderSummary(summary);
+    setShowConfirmModal(true);
+  };
+
+  const confirmOrder = async () => {
+    setShowConfirmModal(false);
+    setLoading(true);
+
+    const form = document.getElementById("form") as HTMLFormElement;
     const formData = new FormData(form);
+    
     // Add custom fields not bound to the form controls
     if (referralSourceSelection === "Other") {
       formData.set("referralSource", referralSourceOtherValue);
@@ -107,6 +231,10 @@ const OrderPage: React.FC = () => {
     }
   };
 
+  const cancelOrder = () => {
+    setShowConfirmModal(false);
+  };
+
   return (
     <div className="row">
       <div className="col-lg-6 mx-auto">
@@ -137,6 +265,21 @@ const OrderPage: React.FC = () => {
                 type="email"
               />
             </FloatingLabel>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <div ref={phoneInputRef}>
+            <FloatingLabel label="Cell Phone">
+              <PhoneInput
+                required
+                country="US"
+                international={false}
+                onChange={handlePhoneChange}
+                className="form-control"
+                name="phone"
+                placeholder="15555555555"
+              />
+            </FloatingLabel>
+            </div>
           </Form.Group>
           <Form.Group className="mb-3">
             <FloatingLabel label="Date of Event">
@@ -267,7 +410,7 @@ const OrderPage: React.FC = () => {
                   </FloatingLabel>
                 </Form.Group>
                 <fieldset className="border p-3 rounded">
-                  <legend className="text-center">Flavors by the dozen</legend>
+                  <legend className="text-center">Flavors</legend>
                   {/* Build up inputs for each flavor we have */}
                   {Object.entries(CakeFlavors)
                     .map(([key, value]) => {
@@ -385,13 +528,167 @@ const OrderPage: React.FC = () => {
                   />
                   Submitting...
                   </>
-              ) : ("Submit"
+              ) : ("Review Order"
               )}
             </Button>
           </div>
         </Form>
         {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
         {responseMessage && <Alert variant="success">{responseMessage}</Alert>}
+
+        {/* Order Confirmation Modal */}
+        <Modal show={showConfirmModal} onHide={cancelOrder} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>Order Confirmation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <h5>Customer Information</h5>
+            <ListGroup className="mb-3">
+              <ListGroup.Item>
+                <strong>Name:</strong> {orderSummary.customerInfo?.fullName}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Email:</strong> {orderSummary.customerInfo?.email}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Cell Phone:</strong> {orderSummary.customerInfo?.phone}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Event Date:</strong> {orderSummary.customerInfo?.eventDate}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Pickup Date:</strong> {orderSummary.customerInfo?.pickupDate}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Payment Method:</strong> {orderSummary.customerInfo?.paymentMethod}
+              </ListGroup.Item>
+            </ListGroup>
+
+            {/* Custom Order Details */}
+            {Object.keys(orderSummary.customOrder?.flavors || {}).length > 0 && (
+              <>
+                <h5>Custom Order Details</h5>
+                <ListGroup className="mb-3">
+                  <ListGroup.Item>
+                    <strong>Event Type:</strong> {orderSummary.customOrder?.eventType}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <strong>Theme Details:</strong> {orderSummary.customOrder?.eventThemeDetails}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <strong>Style:</strong> {orderSummary.customOrder?.cakeBallStyle}
+                  </ListGroup.Item>
+                </ListGroup>
+
+                <h5>Cake Pops</h5>
+                <ListGroup className="mb-3">
+                  {Object.entries(orderSummary.customOrder?.flavors || {}).map(([key, flavor]: [string, any]) => (
+                    <ListGroup.Item key={key} className="d-flex justify-content-between align-items-center">
+                      <span><strong>{flavor.name}:</strong> {flavor.dozens} dozen</span>
+                      <span className="badge bg-primary rounded-pill">
+                        = {flavor.cakePops} cake pops
+                      </span>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              </>
+            )}
+
+            {/* Dance Recital Boxes */}
+            {Object.keys(orderSummary.danceRecitalBoxes || {}).length > 0 && (
+              <>
+                <h5>Dance Recital Boxes</h5>
+                <ListGroup className="mb-3">
+                  {Object.entries(orderSummary.danceRecitalBoxes || {}).map(([key, box]: [string, any]) => (
+                    <ListGroup.Item key={key}>
+                      <strong>{box.name}:</strong> {box.boxes} {box.boxes === 1 ? 'box' : 'boxes'}
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              </>
+            )}
+
+            {/* Add-ons */}
+            {Object.keys(orderSummary.addOns || {}).length > 0 && (
+              <>
+                <h5>Add-Ons</h5>
+                <ListGroup className="mb-3">
+                  {Object.entries(orderSummary.addOns || {}).map(([key, addon]: [string, any]) => {
+                    let displayText = `${addon.quantity} ${addon.unit.toLowerCase()}`;
+                    
+                    if (addon.unit.toLowerCase() === 'single') {
+                      displayText = `${addon.quantity} ${addon.quantity === 1 ? 'piece' : 'pieces'}`;
+                    } else if (addon.unit.toLowerCase().includes('ounce')) {
+                      if (addon.quantity === 1) {
+                        displayText = `1 ${addon.name.toLowerCase().includes('bar') ? 'bar' : 'piece'} @ ${addon.unit}`;
+                      } else {
+                        displayText = `${addon.quantity} ${addon.name.toLowerCase().includes('bar') ? 'bars' : 'items'} @ ${addon.unit} each`;
+                      }
+                    }
+                    
+                    return (
+                      <ListGroup.Item key={key} className="d-flex justify-content-between align-items-center">
+                        <span><strong>{addon.name}:</strong> {displayText}</span>
+                        <span className="badge bg-primary rounded-pill">
+                          = {addon.pieces} {addon.pieces === 1 ? 'piece' : 'pieces'}
+                        </span>
+                      </ListGroup.Item>
+                    );
+                  })}
+                </ListGroup>
+              </>
+            )}
+
+            {/* Order Totals */}
+            <div className="alert alert-warning">
+              <h5 className="mb-2">Order Summary</h5>
+              {orderSummary.totals?.totalCakePops > 0 && (
+                <p className="mb-1">
+                  <strong>Custom Cake Pops: {orderSummary.totals.totalCakePops} pieces</strong>
+                </p>
+              )}
+              {orderSummary.totals?.totalBoxes > 0 && (
+                <p className="mb-1">
+                  <strong>Dance Recital Boxes: {orderSummary.totals.totalBoxes} {orderSummary.totals.totalBoxes === 1 ? 'box' : 'boxes'}</strong>
+                </p>
+              )}
+              {orderSummary.totals?.totalAddOnPieces > 0 && (
+                <p className="mb-1">
+                  <strong>Add-On Items: {orderSummary.totals.totalAddOnPieces} pieces</strong>
+                </p>
+              )}
+              {orderSummary.totals?.grandTotalPieces > 0 && (
+                <div className="border-top pt-2 mt-2">
+                  <p className="mb-0 fs-5">
+                    <strong>Total Pieces Ordered: {orderSummary.totals.grandTotalPieces}</strong>
+                  </p>
+                </div>
+              )}
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={cancelOrder}>
+              Go Back & Edit
+            </Button>
+            <Button variant="dark" onClick={confirmOrder} disabled={loading}>
+              {loading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Submitting Order...
+                </>
+              ) : (
+                "Confirm & Submit Order"
+              )}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </div>
   );
