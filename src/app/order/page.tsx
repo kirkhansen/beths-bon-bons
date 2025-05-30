@@ -87,7 +87,10 @@ const OrderPage: React.FC = () => {
         paymentMethod: formData.get("paymentMethod"),
       },
       customOrder: {},
-      danceRecitalBoxes: {},
+      danceRecital: {
+        danceStudio: formData.get("danceStudio"),
+        boxes: {},
+      },
       addOns: {},
       totals: {
         totalCakePops: 0,
@@ -126,7 +129,7 @@ const OrderPage: React.FC = () => {
       Object.entries(DanceRecitalBoxFlavors).forEach(([key, value]) => {
         const boxes = parseInt(formData.get(key) as string || "0");
         if (boxes > 0) {
-          summary.danceRecitalBoxes[key] = {
+          summary.danceRecital.boxes[key] = {
             name: value,
             boxes: boxes
           };
@@ -180,6 +183,8 @@ const OrderPage: React.FC = () => {
       formData.set("referralSource", referralSourceSelection);
     }
 
+    //set errors to none again, if we made it this far
+    setErrorMessage("");
     // Generate order summary and show confirmation modal
     const summary = generateOrderSummary(formData);
     setOrderSummary(summary);
@@ -450,36 +455,47 @@ const OrderPage: React.FC = () => {
             <Accordion.Item eventKey="1">
               <Accordion.Header>Dance Recital Boxes...</Accordion.Header>
               <Accordion.Body>
-                    {Object.entries(DanceRecitalBoxFlavors)
-                    .map(([key, value]) => {
-                      if (!inputRefs.current[key]) {
-                        inputRefs.current[key] = React.createRef();
-                      }
-                      return (
-                      <Form.Group key={key + "-form-group"} className="mb-3">
-                        <InputGroup key={key + "-input-group"}>
-                          <FloatingLabel key={key + "-label"} label={value}>
-                            <Form.Control
-                              key={key}
-                              ref={inputRefs.current[key]}
-                              name={key}
-                              placeholder={key}
-                              onChange={handleChange}
-                              type="number"
-                              min="0"
-                              step="1"
-                            />
-                          </FloatingLabel>
-                          <InputGroup.Text
-                            key={key + "input-group-text"}
-                            style={{ cursor: "pointer", width:"70px", justifyContent: "center"}}
-                            onClick={() => inputRefs.current[key]?.current?.focus()}
-                          >
-                            {(boxCounts[key] ?? 0) === 1 ? "Box" : "Boxes"}
-                          </InputGroup.Text>
-                        </InputGroup>
-                      </Form.Group>
-                    )})}
+                <Form.Group className="mb-3">
+                  <FloatingLabel label="Dance Studio">
+                    <Form.Control
+                      required={activeKey === "1"}
+                      name="danceStudio"
+                      placeholder="My cool dance studio"
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+
+                {Object.entries(DanceRecitalBoxFlavors)
+                .map(([key, value]) => {
+                  if (!inputRefs.current[key]) {
+                    inputRefs.current[key] = React.createRef();
+                  }
+                  return (
+                  <Form.Group key={key + "-form-group"} className="mb-3">
+                    <InputGroup key={key + "-input-group"}>
+                      <FloatingLabel key={key + "-label"} label={value}>
+                        <Form.Control
+                          key={key}
+                          ref={inputRefs.current[key]}
+                          name={key}
+                          placeholder={key}
+                          onChange={handleChange}
+                          type="number"
+                          min="0"
+                          step="1"
+                        />
+                      </FloatingLabel>
+                      <InputGroup.Text
+                        key={key + "input-group-text"}
+                        style={{ cursor: "pointer", width:"70px", justifyContent: "center"}}
+                        onClick={() => inputRefs.current[key]?.current?.focus()}
+                      >
+                        {(boxCounts[key] ?? 0) === 1 ? "Box" : "Boxes"}
+                      </InputGroup.Text>
+                    </InputGroup>
+                  </Form.Group>
+                )})}
               </Accordion.Body>
             </Accordion.Item>
             {/* End Dance Recital Boxes*/}
@@ -595,11 +611,14 @@ const OrderPage: React.FC = () => {
             )}
 
             {/* Dance Recital Boxes */}
-            {Object.keys(orderSummary.danceRecitalBoxes || {}).length > 0 && (
+            {Object.keys(orderSummary.danceRecital?.boxes || {}).length > 0 && (
               <>
                 <h5>Dance Recital Boxes</h5>
                 <ListGroup className="mb-3">
-                  {Object.entries(orderSummary.danceRecitalBoxes || {}).map(([key, box]: [string, any]) => (
+                  <ListGroup.Item>
+                    <strong>Dance Studio:</strong> {orderSummary.danceRecital.danceStudio}
+                  </ListGroup.Item>
+                  {Object.entries(orderSummary.danceRecital.boxes || {}).map(([key, box]: [string, any]) => (
                     <ListGroup.Item key={key}>
                       <strong>{box.name}:</strong> {box.boxes} {box.boxes === 1 ? 'box' : 'boxes'}
                     </ListGroup.Item>

@@ -43,6 +43,7 @@ export type BaseFormState = {
   birthdayCakeBatter?: string;
   redVelvet?: string;
   lemon?: string;
+  danceStudio?: string;
 };
 
 export const defaultFormState: {
@@ -57,6 +58,7 @@ export const defaultFormState: {
   paymentMethod: null,
   eventType: "",
   eventThemeDetails: "",
+  danceStudio: "",
 };
 
 export interface PostResponse {
