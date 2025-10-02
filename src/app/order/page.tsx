@@ -53,8 +53,7 @@ const OrderPage: React.FC = () => {
   // Define seasonal ranges (pulled from constants for central configuration)
   const showDanceRecital = isSeasonActive(SEASON_RANGES.danceRecital.start, SEASON_RANGES.danceRecital.end);
   const showHalloween = isSeasonActive(SEASON_RANGES.halloween.start, SEASON_RANGES.halloween.end);
-  // const showThanksgiving = isSeasonActive(SEASON_RANGES.thanksgiving.start, SEASON_RANGES.thanksgiving.end);
-  const showThanksgiving = true;
+  const showThanksgiving = isSeasonActive(SEASON_RANGES.thanksgiving.start, SEASON_RANGES.thanksgiving.end);
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [validated, setValidated] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
