@@ -34,6 +34,8 @@ export interface Totals {
   totalCakePops: number;
   totalBoxes: number;
   totalAddOnPieces: number;
+  totalHalloweenPieces?: number;
+  totalThanksgivingPieces?: number;
   grandTotalPieces: number;
 }
 
@@ -44,10 +46,22 @@ export interface AddOns {
     pieces: number;
 }
 
+export interface SeasonalHalloween {
+  sets: number;
+  pieces: number;
+}
+
+export interface SeasonalThanksgiving {
+  dozens: number;
+  pieces: number;
+}
+
 export interface OrderSummary {
   customerInfo: CustomerInfo;
   customOrder: CustomOrder;
   danceRecital: DanceRecital;
   addOns: Record<string, AddOns>;
+  halloween?: SeasonalHalloween;
+  thanksgiving?: SeasonalThanksgiving;
   totals: Totals;
 }

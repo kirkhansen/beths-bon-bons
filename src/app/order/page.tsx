@@ -20,6 +20,7 @@ import {
   CakeFlavors,
   ORDER_FORM_URI,
   DanceRecitalBoxFlavors,
+  SEASON_RANGES,
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 import { isPossiblePhoneNumber } from "react-phone-number-input";
@@ -27,6 +28,33 @@ import { OrderSummary } from "./order_types";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+  // Current date/time values for seasonal controls
+  const now = new Date();
+  const currentMonth = now.getMonth(); // 0 = January
+  const currentDate = now.getDate(); // 1-31
+
+  // Helper: determine if a season is active given start and end in month/day form
+  // start and end are objects like { month: 0, day: 1 } (Jan 1)
+  const isSeasonActive = (
+    start: { month: number; day: number },
+    end: { month: number; day: number }
+  ) => {
+    const startValue = start.month * 100 + start.day; // e.g., Jan 15 => 0*100+15 = 15
+    const endValue = end.month * 100 + end.day;
+    const todayValue = currentMonth * 100 + currentDate;
+
+    if (startValue <= endValue) {
+      return todayValue >= startValue && todayValue <= endValue;
+    }
+    // season wraps year boundary (e.g., Nov -> Feb)
+    return todayValue >= startValue || todayValue <= endValue;
+  };
+
+  // Define seasonal ranges (pulled from constants for central configuration)
+  const showDanceRecital = isSeasonActive(SEASON_RANGES.danceRecital.start, SEASON_RANGES.danceRecital.end);
+  const showHalloween = isSeasonActive(SEASON_RANGES.halloween.start, SEASON_RANGES.halloween.end);
+  // const showThanksgiving = isSeasonActive(SEASON_RANGES.thanksgiving.start, SEASON_RANGES.thanksgiving.end);
+  const showThanksgiving = true;
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [validated, setValidated] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
@@ -103,6 +131,8 @@ const OrderPage: React.FC = () => {
         totalCakePops: 0,
         totalBoxes: 0,
         totalAddOnPieces: 0,
+        totalHalloweenPieces: 0,
+        totalThanksgivingPieces: 0,
         grandTotalPieces: 0,
       }
     };
@@ -132,17 +162,37 @@ const OrderPage: React.FC = () => {
     }
 
     // Dance recital boxes
-    if (activeKey === "1") {
-      Object.entries(DanceRecitalBoxFlavors).forEach(([key, value]) => {
-        const boxes = parseInt(formData.get(key) as string || "0");
-        if (boxes > 0) {
-          summary.danceRecital.boxes[key] = {
-            name: value,
-            boxes: boxes
-          };
-          summary.totals.totalBoxes += boxes;
-        }
-      });
+    Object.entries(DanceRecitalBoxFlavors).forEach(([key, value]) => {
+      const boxes = parseInt(formData.get(key) as string || "0");
+      if (boxes > 0) {
+        summary.danceRecital.boxes[key] = {
+          name: value,
+          boxes: boxes
+        };
+        summary.totals.totalBoxes += boxes;
+      }
+    });
+
+    // Halloween sets (half-dozen sets)
+    const sets = parseInt(formData.get("halloweenHalfDozenSets") as string || "0");
+    if (sets > 0) {
+      const pieces = sets * 6; // half-dozen sets => 6 pieces per set
+      summary.halloween = {
+        sets: sets,
+        pieces: pieces
+      };
+      summary.totals.totalHalloweenPieces = (summary.totals.totalHalloweenPieces || 0) + pieces;
+    }
+
+    // Thanksgiving sampler dozens
+    const dozens = parseInt(formData.get("thanksgivingSamplers") as string || "0");
+    if (dozens > 0) {
+      const pieces = dozens * 12;
+      summary.thanksgiving = {
+        dozens: dozens,
+        pieces: pieces
+      };
+      summary.totals.totalThanksgivingPieces = (summary.totals.totalThanksgivingPieces || 0) + pieces;
     }
 
     // Add-ons
@@ -151,8 +201,12 @@ const OrderPage: React.FC = () => {
       if (quantity > 0) {
         let pieces = quantity;
         // Calculate pieces based on unit type
-        if (item.unit.toLowerCase().includes('dozen')) {
+        const unitLower = item.unit.toLowerCase();
+        if (unitLower.includes('dozen')) {
           pieces = quantity * 12;
+        } else if (unitLower.includes('3 bar')) {
+          // '3 Bars' means each quantity represents 3 pieces
+          pieces = quantity * 3;
         }
         
         summary.addOns[item.name] = {
@@ -165,8 +219,11 @@ const OrderPage: React.FC = () => {
       }
     });
 
-    // Calculate grand total pieces
-    summary.totals.grandTotalPieces = summary.totals.totalCakePops + summary.totals.totalAddOnPieces;
+  // Calculate grand total pieces
+  const addOnPieces = summary.totals.totalAddOnPieces || 0;
+  const halloweenPieces = summary.totals.totalHalloweenPieces || 0;
+  const thanksgivingPieces = summary.totals.totalThanksgivingPieces || 0;
+  summary.totals.grandTotalPieces = summary.totals.totalCakePops + addOnPieces + halloweenPieces + thanksgivingPieces;
 
     return summary;
   };
@@ -459,6 +516,7 @@ const OrderPage: React.FC = () => {
             </Accordion.Item>
             {/* End custom orders */}
             {/* Dance Recital Boxes */}
+            {showDanceRecital && (
             <Accordion.Item eventKey="1">
               <Accordion.Header>Dance Recital Boxes...</Accordion.Header>
               <Accordion.Body>
@@ -505,7 +563,55 @@ const OrderPage: React.FC = () => {
                 )})}
               </Accordion.Body>
             </Accordion.Item>
+            )}
             {/* End Dance Recital Boxes*/}
+            {/* Halloween Sets */}
+            {showHalloween && (
+            <Accordion.Item eventKey="2">
+              <Accordion.Header>🦇 Halloween Sets...</Accordion.Header>
+              <Accordion.Body>
+                <Form.Group className="mb-3">
+                  <InputGroup>
+                    <FloatingLabel label="Half Dozen Sets">
+                      <Form.Control
+                        name="halloweenHalfDozenSets"
+                        placeholder="Half Dozen Sets"
+                        onChange={handleChange}
+                        type="number"
+                        min="0"
+                        step="1"
+                      />
+                    </FloatingLabel>
+                    <InputGroup.Text style={{width: "70px", justifyContent: "center"}}>Sets</InputGroup.Text>
+                  </InputGroup>
+                </Form.Group>
+              </Accordion.Body>
+            </Accordion.Item>
+            )}
+            {/* Thanksgiving Sampler */}
+            {showThanksgiving && (
+            <Accordion.Item eventKey="3">
+              <Accordion.Header>🦃 Thanksgiving Sampler...</Accordion.Header>
+              <Accordion.Body>
+                <Form.Group className="mb-3">
+                  <InputGroup>
+                    <FloatingLabel label="Enter the number of dozens">
+                      <Form.Control
+                        name="thanksgivingSamplers"
+                        placeholder="Dozens"
+                        onChange={handleChange}
+                        type="number"
+                        min="0"
+                        step="1"
+                      />
+                    </FloatingLabel>
+                    <InputGroup.Text style={{width: "70px", justifyContent: "center"}}>Dozen</InputGroup.Text>
+                  </InputGroup>
+                </Form.Group>
+              </Accordion.Body>
+            </Accordion.Item>
+            )}
+
           </Accordion>
           <h3 className="text-center mt-3">Add-Ons</h3>
           {addOns.map((item) => {
@@ -631,6 +737,32 @@ const OrderPage: React.FC = () => {
                       <strong>{box.name}:</strong> {box.boxes} {box.boxes === 1 ? 'box' : 'boxes'}
                     </ListGroup.Item>
                   ))}
+                </ListGroup>
+              </>
+            )}
+
+            {/* Halloween Sets (separate) */}
+            {orderSummary.halloween && orderSummary.halloween.sets > 0 && (
+              <>
+                <h5>Halloween Sets</h5>
+                <ListGroup className="mb-3">
+                  <ListGroup.Item>
+                    <strong>Half-Dozen Sets:</strong> {orderSummary.halloween.sets} {orderSummary.halloween.sets === 1 ? 'set' : 'sets'}
+                    <span className="badge bg-primary rounded-pill ms-2">= {orderSummary.halloween.pieces} pieces</span>
+                  </ListGroup.Item>
+                </ListGroup>
+              </>
+            )}
+
+            {/* Thanksgiving Sampler (separate) */}
+            {orderSummary.thanksgiving && orderSummary.thanksgiving.dozens > 0 && (
+              <>
+                <h5>Thanksgiving Sampler</h5>
+                <ListGroup className="mb-3">
+                  <ListGroup.Item>
+                    <strong>Dozens:</strong> {orderSummary.thanksgiving.dozens}
+                    <span className="badge bg-primary rounded-pill ms-2">= {orderSummary.thanksgiving.pieces} pieces</span>
+                  </ListGroup.Item>
                 </ListGroup>
               </>
             )}
