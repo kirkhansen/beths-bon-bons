@@ -82,7 +82,7 @@ export const addOns = [
 
 // Seasonal ranges are expressed with 0-indexed months and day numbers.
 export const SEASON_RANGES = {
-  danceRecital: { start: { month: 0, day: 1 }, end: { month: 5, day: 30 } }, // Jan 1 - Jun 30
+  danceRecital: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
   halloween: { start: { month: 9, day: 1 }, end: { month: 9, day: 31 } }, // Oct 1 - Oct 31
   thanksgiving: { start: { month: 10, day: 1 }, end: { month: 10, day: 30 } }, // Nov 1 - Nov 30
   christmas: { start: { month: 10, day: 15 }, end: { month: 11, day: 31 } }, // Nov 15 - Dec 31
