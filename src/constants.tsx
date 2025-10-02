@@ -1,4 +1,4 @@
-export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbxwBf-0jh8eItauRhCbhrTmBAyMiLisGdDUyexSiE9ManisZ_A6mdaVXeqpJfjiFB5NlA/exec"
+export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbzO3_rtvmA9pnCUwk1ysl_bKrMwGLtQ-xzH_8WVz37yTQIIkZDH9Gch5aq97io5L7cCyQ/exec"
 export const MAIL_CHIMP_URI = "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
 type PaymentMethod = "venmo" | "cash" | null;
@@ -71,10 +71,19 @@ export const email = "bethsbonbons@gmail.com";
 
 export const addOns = [
   {"name": "Bon Bons", "unit": "Dozen", "price": "15"},
-  {"name": "Coffee Bites", "unit": "12 Ounces", "price": "10"},
+  {"name": "Coffee Bites", "unit": "4 Ounces", "price": "10"},
+  {"name": "Coffee Flight", "unit": "3 Bars", "price": "20"},
   {"name": "Custom Chocolate Bars", "unit": "Single", "price": "5"},
   {"name": "Chocolate Oreos", "unit": "Dozen", "price": "20"},
   {"name": "Golden Oreos", "unit": "Dozen", "price": "20"},
   {"name": "Pretzel Rods", "unit": "Dozen", "price": "18"},
   {"name": "S'mores Bars", "unit": "Single", "price": "4"},
 ];
+
+// Seasonal ranges are expressed with 0-indexed months and day numbers.
+export const SEASON_RANGES = {
+  danceRecital: { start: { month: 0, day: 1 }, end: { month: 5, day: 30 } }, // Jan 1 - Jun 30
+  halloween: { start: { month: 9, day: 1 }, end: { month: 9, day: 31 } }, // Oct 1 - Oct 31
+  thanksgiving: { start: { month: 10, day: 1 }, end: { month: 10, day: 30 } }, // Nov 1 - Nov 30
+  christmas: { start: { month: 10, day: 15 }, end: { month: 11, day: 31 } }, // Nov 15 - Dec 31
+};
