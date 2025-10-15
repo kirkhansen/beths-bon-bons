@@ -571,7 +571,7 @@ const OrderPage: React.FC = () => {
               <Accordion.Body>
                 <Form.Group className="mb-3">
                   <InputGroup>
-                    <FloatingLabel label="Halloween Sets">
+                    <FloatingLabel label="Halloween Sets (8 pieces per set)">
                       <Form.Control
                         name="halloweenSets"
                         placeholder="Number of sets"
