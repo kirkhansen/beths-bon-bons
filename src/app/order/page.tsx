@@ -172,10 +172,10 @@ const OrderPage: React.FC = () => {
       }
     });
 
-    // Halloween sets (half-dozen sets)
-    const sets = parseInt(formData.get("halloweenHalfDozenSets") as string || "0");
+    // Halloween sets (8 piece sets)
+  const sets = parseInt(formData.get("halloweenSets") as string || "0");
     if (sets > 0) {
-      const pieces = sets * 6; // half-dozen sets => 6 pieces per set
+      const pieces = sets * 8; // each Halloween set => 8 pieces
       summary.halloween = {
         sets: sets,
         pieces: pieces
@@ -571,10 +571,10 @@ const OrderPage: React.FC = () => {
               <Accordion.Body>
                 <Form.Group className="mb-3">
                   <InputGroup>
-                    <FloatingLabel label="Half Dozen Sets">
+                    <FloatingLabel label="Halloween Sets">
                       <Form.Control
-                        name="halloweenHalfDozenSets"
-                        placeholder="Half Dozen Sets"
+                        name="halloweenSets"
+                        placeholder="Number of sets"
                         onChange={handleChange}
                         type="number"
                         min="0"
@@ -746,7 +746,7 @@ const OrderPage: React.FC = () => {
                 <h5>Halloween Sets</h5>
                 <ListGroup className="mb-3">
                   <ListGroup.Item>
-                    <strong>Half-Dozen Sets:</strong> {orderSummary.halloween.sets} {orderSummary.halloween.sets === 1 ? 'set' : 'sets'}
+                    <strong>Halloween Sets (8 pcs each):</strong> {orderSummary.halloween.sets} {orderSummary.halloween.sets === 1 ? 'set' : 'sets'}
                     <span className="badge bg-primary rounded-pill ms-2">= {orderSummary.halloween.pieces} pieces</span>
                   </ListGroup.Item>
                 </ListGroup>
