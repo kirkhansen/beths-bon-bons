@@ -24,7 +24,7 @@ import {
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 import { isPossiblePhoneNumber } from "react-phone-number-input";
-import { OrderSummary } from "./order_types";
+import { OrderSummary, SeasonalChristmas } from "./order_types";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -205,7 +205,7 @@ const OrderPage: React.FC = () => {
         cakePopsSets: 0,
         nutcrackerBoxes: 0,
         pieces: pieces,
-      } as any;
+      } as SeasonalChristmas;
       summary.totals.totalChristmasPieces = (summary.totals.totalChristmasPieces || 0) + pieces;
     }
 
@@ -213,7 +213,7 @@ const OrderPage: React.FC = () => {
     if (cakeSets > 0) {
       const pieces = cakeSets * 12; // each cake pops set => 12 pieces
       if (!summary.christmas) {
-        summary.christmas = { partyBoxes: 0, cakePopsSets: 0, nutcrackerBoxes: 0, pieces: 0 } as any;
+        summary.christmas = { partyBoxes: 0, cakePopsSets: 0, nutcrackerBoxes: 0, pieces: 0 } as SeasonalChristmas;
       }
       summary.christmas!.cakePopsSets = cakeSets;
       summary.christmas!.pieces = (summary.christmas!.pieces || 0) + pieces;
@@ -224,7 +224,7 @@ const OrderPage: React.FC = () => {
     if (nutBoxes > 0) {
       const pieces = nutBoxes * 12; // treat nutcracker box as a dozen
       if (!summary.christmas) {
-        summary.christmas = { partyBoxes: 0, cakePopsSets: 0, nutcrackerBoxes: 0, pieces: 0 } as any;
+        summary.christmas = { partyBoxes: 0, cakePopsSets: 0, nutcrackerBoxes: 0, pieces: 0 } as SeasonalChristmas;
       }
       summary.christmas!.nutcrackerBoxes = nutBoxes;
       summary.christmas!.pieces = (summary.christmas!.pieces || 0) + pieces;
