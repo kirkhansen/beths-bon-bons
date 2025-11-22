@@ -84,6 +84,6 @@ export const addOns = [
 export const SEASON_RANGES = {
   danceRecital: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
   halloween: { start: { month: 9, day: 1 }, end: { month: 9, day: 31 } }, // Oct 1 - Oct 31
-  thanksgiving: { start: { month: 10, day: 1 }, end: { month: 10, day: 30 } }, // Nov 1 - Nov 30
+  thanksgiving: { start: { month: 10, day: 1 }, end: { month: 10, day: 25 } }, // Nov 1 - Nov 25
   christmas: { start: { month: 10, day: 15 }, end: { month: 11, day: 20 } }, // Nov 15 - Dec 20
 };
