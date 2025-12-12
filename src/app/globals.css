@@ -25,11 +25,10 @@ a {
   .navbar-container {
     max-width: 62%;
   }
-
 }
 
 /* Small screens (up to 768px) */
-@media(max-width: 768px) {
+@media (max-width: 768px) {
   .carousel-container {
     max-width: 95%;
   }
@@ -44,8 +43,10 @@ a {
   background-color: #fe9aa0;
   padding: 10px 15px;
   width: 100%;
-  transition: background-color 0.3s ease, color 0.3 ease;
-  flex: 1
+  transition:
+    background-color 0.3s ease,
+    color 0.3 ease;
+  flex: 1;
 }
 
 .nav-column:hover {
@@ -53,7 +54,8 @@ a {
   color: white;
 }
 
-.nav-column.active, .nav-column:focus {
+.nav-column.active,
+.nav-column:focus {
   background-color: #212529;
   color: white;
 }
@@ -61,7 +63,7 @@ a {
 .divider {
   width: 2.1px;
   background-color: #ffffff;
-  height: 50%; 
+  height: 50%;
   align-self: center; /* Center the divider vertically */
 }
 

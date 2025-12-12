@@ -22,9 +22,13 @@ const MainNavBar: React.FC = () => {
       <Navbar>
         <Container className="navbar-container">
           <Nav className="w-100 justify-content-between">
-            <Link className="nav-link nav-column" href="/about">About</Link>
+            <Link className="nav-link nav-column" href="/about">
+              About
+            </Link>
             <div className="divider"></div>
-            <Link className="nav-link nav-column" href="/order">Order</Link>
+            <Link className="nav-link nav-column" href="/order">
+              Order
+            </Link>
           </Nav>
         </Container>
       </Navbar>

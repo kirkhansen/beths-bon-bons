@@ -21,13 +21,20 @@ const Home: React.FC = () => {
           <Carousel className="rounded-3">
             {images.map((src, index) => (
               <CarouselItem key={index} className="rounded-3">
-                <Image src={src} alt={`Slide ${index}`} className="img-fluid rounded-3" />
+                <Image
+                  src={src}
+                  alt={`Slide ${index}`}
+                  className="img-fluid rounded-3"
+                />
               </CarouselItem>
             ))}
           </Carousel>
         </div>
         <div className="row">
-          <div className="col-10 col-md-6 col-lg-5 mx-auto mt-4" style={{width: "345px"}}>
+          <div
+            className="col-10 col-md-6 col-lg-5 mx-auto mt-4"
+            style={{ width: "345px" }}
+          >
             <Mailchimp />
           </div>
         </div>
