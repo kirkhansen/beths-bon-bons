@@ -18,6 +18,7 @@ export interface CustomerInfo {
   eventDate: string | null;
   pickupDate: string | null;
   paymentMethod: string | null;
+  doNotMailingList?: boolean | null;
 }
 
 export interface DanceRecitalBoxes {
@@ -41,10 +42,10 @@ export interface Totals {
 }
 
 export interface AddOns {
-    name: string;
-    quantity: number;
-    unit: string;
-    pieces: number;
+  name: string;
+  quantity: number;
+  unit: string;
+  pieces: number;
 }
 
 export interface SeasonalHalloween {

@@ -1,5 +1,7 @@
-export const ORDER_FORM_URI = "https://script.google.com/macros/s/AKfycbzL50WI0kbQcTPnTipmJnMx7i5aDtPLKe3aWSvym08WlZwf5DjUFItHB_2KasCSGZT27w/exec"
-export const MAIL_CHIMP_URI = "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
+export const ORDER_FORM_URI =
+  "https://script.google.com/macros/s/AKfycby2vrQxtKaY-3LMKcsezconOPauC6VHqZ-2w71VsheclSSmxArCr09hkJEnCoAY4WSFpA/exec"
+export const MAIL_CHIMP_URI =
+  "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
 type PaymentMethod = "venmo" | "cash" | null;
 // type CakeBallStyle = "cakeBallTruffle" | "cakePop" | "upsideDownCakePop" | null;
@@ -44,6 +46,7 @@ export type BaseFormState = {
   redVelvet?: string;
   lemon?: string;
   danceStudio?: string;
+  doNotMailingList?: boolean;
 };
 
 export const defaultFormState: {
@@ -59,6 +62,7 @@ export const defaultFormState: {
   eventType: "",
   eventThemeDetails: "",
   danceStudio: "",
+  doNotMailingList: false,
 };
 
 export interface PostResponse {
@@ -68,16 +72,15 @@ export interface PostResponse {
 
 export const email = "bethsbonbons@gmail.com";
 
-
 export const addOns = [
-  {"name": "Bon Bons", "unit": "Dozen", "price": "15"},
-  {"name": "Coffee Bites", "unit": "4 Ounces", "price": "10"},
-  {"name": "Coffee Flight", "unit": "3 Bars", "price": "20"},
-  {"name": "Custom Chocolate Bars", "unit": "Single", "price": "5"},
-  {"name": "Chocolate Oreos", "unit": "Dozen", "price": "20"},
-  {"name": "Golden Oreos", "unit": "Dozen", "price": "20"},
-  {"name": "Pretzel Rods", "unit": "Dozen", "price": "18"},
-  {"name": "S'mores Bars", "unit": "Single", "price": "4"},
+  { name: "Bon Bons", unit: "Dozen", price: "15" },
+  { name: "Coffee Bites", unit: "4 Ounces", price: "10" },
+  { name: "Coffee Flight", unit: "3 Bars", price: "20" },
+  { name: "Custom Chocolate Bars", unit: "Single", price: "5" },
+  { name: "Chocolate Oreos", unit: "Dozen", price: "20" },
+  { name: "Golden Oreos", unit: "Dozen", price: "20" },
+  { name: "Pretzel Rods", unit: "Dozen", price: "18" },
+  { name: "S'mores Bars", unit: "Single", price: "4" },
 ];
 
 // Seasonal ranges are expressed with 0-indexed months and day numbers.
