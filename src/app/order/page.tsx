@@ -427,7 +427,7 @@ const OrderPage: React.FC = () => {
                 "Please DO NOT include me in mailing list to learn about deals and upcoming offerings"
               }
               onChange={handleCheckboxChange}
-              checked={Boolean((formState as any).doNotMailingList)}
+              checked={formState.doNotMailingList ?? false}
             />
           </Form.Group>
           <Form.Group className="mb-3">
