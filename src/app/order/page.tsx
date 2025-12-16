@@ -334,6 +334,14 @@ const OrderPage: React.FC = () => {
     setErrorMessage("");
     // Generate order summary and show confirmation modal
     const summary = generateOrderSummary(formData);
+    
+    // Validate that at least one item was ordered
+    if (summary.totals.grandTotalPieces <= 0) {
+      setErrorMessage("Please order at least one item before submitting.");
+      setValidated(true);
+      return;
+    }
+    
     setOrderSummary(summary);
     setShowConfirmModal(true);
   };
