@@ -224,57 +224,51 @@ const OrderPage: React.FC = () => {
     const partyBoxes = parseInt(
       (formData.get("christmasPartyBox") as string) || "0",
     );
-    if (partyBoxes > 0) {
-      const pieces = partyBoxes * 24; // approx 24 treats per party box
-      summary.christmas = {
-        partyBoxes: partyBoxes,
-        cakePopsSets: 0,
-        nutcrackerBoxes: 0,
-        pieces: pieces,
-      } as SeasonalChristmas;
-      summary.totals.totalChristmasPieces =
-        (summary.totals.totalChristmasPieces || 0) + pieces;
-    }
-
     const cakeSets = parseInt(
       (formData.get("christmasCakePopsSet") as string) || "0",
     );
-    if (cakeSets > 0) {
-      const pieces = cakeSets * 12; // each cake pops set => 12 pieces
-      if (!summary.christmas) {
-        summary.christmas = {
-          partyBoxes: 0,
-          cakePopsSets: 0,
-          nutcrackerBoxes: 0,
-          pieces: 0,
-        } as SeasonalChristmas;
-      }
-      summary.christmas!.cakePopsSets = cakeSets;
-      summary.christmas!.pieces = (summary.christmas!.pieces || 0) + pieces;
-      summary.totals.totalChristmasPieces =
-        (summary.totals.totalChristmasPieces || 0) + pieces;
-    }
-
     const nutBoxes = parseInt((formData.get("nutcrackerBox") as string) || "0");
-    if (nutBoxes > 0) {
-      const pieces = nutBoxes * 12; // treat nutcracker box as a dozen
-      if (!summary.christmas) {
-        summary.christmas = {
-          partyBoxes: 0,
-          cakePopsSets: 0,
-          nutcrackerBoxes: 0,
-          pieces: 0,
-        } as SeasonalChristmas;
-      }
-      summary.christmas!.nutcrackerBoxes = nutBoxes;
-      summary.christmas!.pieces = (summary.christmas!.pieces || 0) + pieces;
-      summary.totals.totalChristmasPieces =
-        (summary.totals.totalChristmasPieces || 0) + pieces;
+
+    // Only create christmas object if at least one item is selected
+    if (partyBoxes > 0 || cakeSets > 0 || nutBoxes > 0) {
+      summary.christmas = {
+        partyBoxes: partyBoxes,
+        cakePopsSets: cakeSets,
+        nutcrackerBoxes: nutBoxes,
+        pieces: 0,
+      } as SeasonalChristmas;
+
+      const partyBoxesPieces = partyBoxes * 24;
+      const cakeSetsPieces = cakeSets * 12;
+      const nutBoxesPieces = nutBoxes * 3;
+
+      summary.christmas.pieces =
+        partyBoxesPieces + cakeSetsPieces + nutBoxesPieces;
+      summary.totals.totalChristmasPieces = summary.christmas.pieces;
     }
 
-    // Add-ons
+    // Add-ons (including Christmas section duplicates)
+    const christmasFieldMapping: Record<string, string> = {
+      christmasBonBons: "Bon Bons",
+      christmasCoffeeFlight: "Coffee Flight",
+      christmasCustomChocolateBars: "Custom Chocolate Bars",
+      christmasSmoresBars: "S'mores Bars",
+    };
+
     addOns.forEach((item) => {
-      const quantity = parseInt((formData.get(item.name) as string) || "0");
+      let quantity = parseInt((formData.get(item.name) as string) || "0");
+
+      // Also check the Christmas-specific field name if it exists
+      const christmasFieldName = Object.keys(christmasFieldMapping).find(
+        (key) => christmasFieldMapping[key] === item.name,
+      );
+      if (christmasFieldName) {
+        const christmasQuantity = parseInt(
+          (formData.get(christmasFieldName) as string) || "0",
+        );
+        quantity += christmasQuantity;
+      }
+
       if (quantity > 0) {
         let pieces = quantity;
         // Calculate pieces based on unit type
@@ -334,14 +328,14 @@ const OrderPage: React.FC = () => {
     setErrorMessage("");
     // Generate order summary and show confirmation modal
     const summary = generateOrderSummary(formData);
-    
+
     // Validate that at least one item was ordered
     if (summary.totals.grandTotalPieces <= 0) {
       setErrorMessage("Please order at least one item before submitting.");
       setValidated(true);
       return;
     }
-    
+
     setOrderSummary(summary);
     setShowConfirmModal(true);
   };
@@ -783,7 +777,7 @@ const OrderPage: React.FC = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <InputGroup>
-                      <FloatingLabel label="Nutcracker Box (~12 treats)">
+                      <FloatingLabel label="Nutcracker Box (3 pops plus peppermint)">
                         <Form.Control
                           name="nutcrackerBox"
                           placeholder="Boxes"
@@ -807,7 +801,7 @@ const OrderPage: React.FC = () => {
                           type="number"
                           placeholder="Dozens"
                           onChange={handleChange}
-                          name={`Bon Bons`}
+                          name={`christmasBonBons`}
                           min="0"
                           step="1"
                         />
@@ -819,7 +813,7 @@ const OrderPage: React.FC = () => {
                     <InputGroup>
                       <FloatingLabel label="Coffee Flight (3 treats)">
                         <Form.Control
-                          name={`Coffee Flight`}
+                          name={`christmasCoffeeFlight`}
                           placeholder="Quantity"
                           onChange={handleChange}
                           type="number"
@@ -836,9 +830,9 @@ const OrderPage: React.FC = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <InputGroup>
-                      <FloatingLabel label={`Custom Chocolate Bar`}>
+                      <FloatingLabel label="Custom Chocolate Bar">
                         <Form.Control
-                          name={`Custom Chocolate Bars`}
+                          name={`christmasCustomChocolateBars`}
                           placeholder="Quantity"
                           onChange={handleChange}
                           type="number"
@@ -857,7 +851,7 @@ const OrderPage: React.FC = () => {
                     <InputGroup>
                       <FloatingLabel label={`S'mores Bar Stocking Stuffer`}>
                         <Form.Control
-                          name={`S'mores Bars`}
+                          name={`christmasSmoresBars`}
                           placeholder="Quantity"
                           onChange={handleChange}
                           type="number"
@@ -1067,40 +1061,35 @@ const OrderPage: React.FC = () => {
                 <>
                   <h5>Christmas Offerings</h5>
                   <ListGroup className="mb-3">
-                    {orderSummary.christmas!.partyBoxes &&
-                      orderSummary.christmas!.partyBoxes > 0 && (
-                        <ListGroup.Item>
-                          <strong>Party Boxes:</strong>{" "}
-                          {orderSummary.christmas!.partyBoxes}
-                          <span className="badge bg-primary rounded-pill ms-2">
-                            = {orderSummary.christmas!.pieces || 0} pieces
-                          </span>
-                        </ListGroup.Item>
-                      )}
-                    {orderSummary.christmas!.cakePopsSets &&
-                      orderSummary.christmas!.cakePopsSets > 0 && (
-                        <ListGroup.Item>
-                          <strong>Cake Pops Sets (12 pcs each):</strong>{" "}
-                          {orderSummary.christmas!.cakePopsSets}
-                          <span className="badge bg-primary rounded-pill ms-2">
-                            = {(orderSummary.christmas!.cakePopsSets || 0) * 12}{" "}
-                            pieces
-                          </span>
-                        </ListGroup.Item>
-                      )}
-                    {orderSummary.christmas!.nutcrackerBoxes &&
-                      orderSummary.christmas!.nutcrackerBoxes > 0 && (
-                        <ListGroup.Item>
-                          <strong>Nutcracker Boxes (dozen):</strong>{" "}
-                          {orderSummary.christmas!.nutcrackerBoxes}
-                          <span className="badge bg-primary rounded-pill ms-2">
-                            ={" "}
-                            {(orderSummary.christmas!.nutcrackerBoxes || 0) *
-                              12}{" "}
-                            pieces
-                          </span>
-                        </ListGroup.Item>
-                      )}
+                    {orderSummary.christmas.partyBoxes > 0 && (
+                      <ListGroup.Item>
+                        <strong>Party Boxes:</strong>{" "}
+                        {orderSummary.christmas.partyBoxes}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {orderSummary.christmas.partyBoxes * 24} pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                    {orderSummary.christmas.cakePopsSets > 0 && (
+                      <ListGroup.Item>
+                        <strong>Cake Pops Sets (12 pcs each):</strong>{" "}
+                        {orderSummary.christmas.cakePopsSets}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {orderSummary.christmas.cakePopsSets * 12} pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                    {orderSummary.christmas.nutcrackerBoxes > 0 && (
+                      <ListGroup.Item>
+                        <strong>
+                          Nutcracker Boxes (3 pops plus peppermint):
+                        </strong>{" "}
+                        {orderSummary.christmas.nutcrackerBoxes}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {orderSummary.christmas.nutcrackerBoxes * 3} pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
                   </ListGroup>
                 </>
               )}
