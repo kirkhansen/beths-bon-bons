@@ -1061,32 +1061,35 @@ const OrderPage: React.FC = () => {
                 <>
                   <h5>Christmas Offerings</h5>
                   <ListGroup className="mb-3">
-                    {orderSummary.christmas.partyBoxes > 0 && (
+                    {(orderSummary.christmas.partyBoxes ?? 0) > 0 && (
                       <ListGroup.Item>
                         <strong>Party Boxes:</strong>{" "}
                         {orderSummary.christmas.partyBoxes}
                         <span className="badge bg-primary rounded-pill ms-2">
-                          = {orderSummary.christmas.partyBoxes * 24} pieces
+                          = {(orderSummary.christmas.partyBoxes ?? 0) * 24}{" "}
+                          pieces
                         </span>
                       </ListGroup.Item>
                     )}
-                    {orderSummary.christmas.cakePopsSets > 0 && (
+                    {(orderSummary.christmas.cakePopsSets ?? 0) > 0 && (
                       <ListGroup.Item>
                         <strong>Cake Pops Sets (12 pcs each):</strong>{" "}
                         {orderSummary.christmas.cakePopsSets}
                         <span className="badge bg-primary rounded-pill ms-2">
-                          = {orderSummary.christmas.cakePopsSets * 12} pieces
+                          = {(orderSummary.christmas.cakePopsSets ?? 0) * 12}{" "}
+                          pieces
                         </span>
                       </ListGroup.Item>
                     )}
-                    {orderSummary.christmas.nutcrackerBoxes > 0 && (
+                    {(orderSummary.christmas.nutcrackerBoxes ?? 0) > 0 && (
                       <ListGroup.Item>
                         <strong>
                           Nutcracker Boxes (3 pops plus peppermint):
                         </strong>{" "}
                         {orderSummary.christmas.nutcrackerBoxes}
                         <span className="badge bg-primary rounded-pill ms-2">
-                          = {orderSummary.christmas.nutcrackerBoxes * 3} pieces
+                          = {(orderSummary.christmas.nutcrackerBoxes ?? 0) * 3}{" "}
+                          pieces
                         </span>
                       </ListGroup.Item>
                     )}
