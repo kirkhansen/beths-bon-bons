@@ -354,6 +354,27 @@ const OrderPage: React.FC = () => {
       formData.set("referralSource", referralSourceSelection);
     }
 
+    // Map Christmas add-on fields to their regular equivalents
+    const christmasFieldMapping: Record<string, string> = {
+      christmasBonBons: "Bon Bons",
+      christmasCoffeeFlight: "Coffee Flight",
+      christmasCustomChocolateBars: "Custom Chocolate Bars",
+      christmasSmoresBars: "S'mores Bars",
+    };
+    // Transfer Christmas values to regular field names
+    Object.entries(christmasFieldMapping).forEach(([christmasField, regularField]) => {
+      const christmasValue = formData.get(christmasField);
+      const regularValue = formData.get(regularField);
+      // If Christmas field has a value, use it (or add it to regular field if regular also has a value)
+      if (christmasValue && parseInt(christmasValue as string) > 0) {
+        const regularQuantity = regularValue ? parseInt(regularValue as string) : 0;
+        const christmasQuantity = parseInt(christmasValue as string);
+        formData.set(regularField, String(regularQuantity + christmasQuantity));
+      }
+      // Remove the Christmas-specific field from the form data
+      formData.delete(christmasField);
+    });
+
     try {
       const response = await fetch(ORDER_FORM_URI, {
         method: "POST",
