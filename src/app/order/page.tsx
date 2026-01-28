@@ -24,7 +24,7 @@ import {
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 import { isPossiblePhoneNumber } from "react-phone-number-input";
-import { OrderSummary, SeasonalChristmas } from "./order_types";
+import { OrderSummary, SeasonalChristmas, SeasonalValentines } from "./order_types";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -66,6 +66,10 @@ const OrderPage: React.FC = () => {
   const showChristmas = isSeasonActive(
     SEASON_RANGES.christmas.start,
     SEASON_RANGES.christmas.end,
+  );
+  const showValentines = isSeasonActive(
+    SEASON_RANGES.valentines.start,
+    SEASON_RANGES.valentines.end,
   );
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [validated, setValidated] = useState(false);
@@ -247,6 +251,29 @@ const OrderPage: React.FC = () => {
       summary.totals.totalChristmasPieces = summary.christmas.pieces;
     }
 
+    // Valentine's items
+    const valentinesBouquets = parseInt(
+      (formData.get("valentinesChocolateBouquet") as string) || "0",
+    );
+    const valentinesCakeSets = parseInt(
+      (formData.get("valentinesCakePopsSet") as string) || "0",
+    );
+
+    // Only create valentines object if at least one item is selected
+    if (valentinesBouquets > 0 || valentinesCakeSets > 0) {
+      summary.valentines = {
+        chocolateBouquets: valentinesBouquets,
+        cakePopsSets: valentinesCakeSets,
+        pieces: 0,
+      } as SeasonalValentines;
+
+      const bouquetPieces = valentinesBouquets * 6; // 3 cake pops + 3 marshmallows
+      const cakeSetsPieces = valentinesCakeSets * 6; // 6 cake pops
+
+      summary.valentines.pieces = bouquetPieces + cakeSetsPieces;
+      summary.totals.totalValentinesPieces = summary.valentines.pieces;
+    }
+
     // Add-ons (including Christmas section duplicates)
     const christmasFieldMapping: Record<string, string> = {
       christmasBonBons: "Bon Bons",
@@ -295,12 +322,14 @@ const OrderPage: React.FC = () => {
     const halloweenPieces = summary.totals.totalHalloweenPieces || 0;
     const thanksgivingPieces = summary.totals.totalThanksgivingPieces || 0;
     const christmasPieces = summary.totals.totalChristmasPieces || 0;
+    const valentinesPieces = summary.totals.totalValentinesPieces || 0;
     summary.totals.grandTotalPieces =
       summary.totals.totalCakePops +
       addOnPieces +
       halloweenPieces +
       thanksgivingPieces +
-      christmasPieces;
+      christmasPieces +
+      valentinesPieces;
 
     return summary;
   };
@@ -447,7 +476,7 @@ const OrderPage: React.FC = () => {
               name="doNotMailingList"
               id="doNotMailingList"
               label={
-                "Please DO NOT include me in mailing list to learn about deals and upcoming offerings"
+                "Check this box if you do not want to be added to my subscriber list to get news about upcoming treats and deals"
               }
               onChange={handleCheckboxChange}
               checked={formState.doNotMailingList ?? false}
@@ -890,6 +919,52 @@ const OrderPage: React.FC = () => {
                 </Accordion.Body>
               </Accordion.Item>
             )}
+            {/* Valentine's Offerings */}
+            {showValentines && (
+              <Accordion.Item eventKey="5">
+                <Accordion.Header>💕 Valentine&apos;s Offerings...</Accordion.Header>
+                <Accordion.Body>
+                  <Form.Group className="mb-3">
+                    <InputGroup>
+                      <FloatingLabel label="Valentine&apos;s Chocolate Bouquet (3 cake pops and 3 marshmallows)">
+                        <Form.Control
+                          name="valentinesChocolateBouquet"
+                          placeholder="Quantity"
+                          onChange={handleChange}
+                          type="number"
+                          min="0"
+                          step="1"
+                        />
+                      </FloatingLabel>
+                      <InputGroup.Text
+                        style={{ width: "70px", justifyContent: "center" }}
+                      >
+                        $15
+                      </InputGroup.Text>
+                    </InputGroup>
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <InputGroup>
+                      <FloatingLabel label="Valentine's Cake Pop Set (6 decorated pops with conversation hearts)">
+                        <Form.Control
+                          name="valentinesCakePopsSet"
+                          placeholder="Quantity"
+                          onChange={handleChange}
+                          type="number"
+                          min="0"
+                          step="1"
+                        />
+                      </FloatingLabel>
+                      <InputGroup.Text
+                        style={{ width: "70px", justifyContent: "center" }}
+                      >
+                        $20
+                      </InputGroup.Text>
+                    </InputGroup>
+                  </Form.Group>
+                </Accordion.Body>
+              </Accordion.Item>
+            )}
           </Accordion>
           <h3 className="text-center mt-3">Add-Ons</h3>
           {addOns.map((item) => {
@@ -1110,6 +1185,35 @@ const OrderPage: React.FC = () => {
                         {orderSummary.christmas.nutcrackerBoxes}
                         <span className="badge bg-primary rounded-pill ms-2">
                           = {(orderSummary.christmas.nutcrackerBoxes ?? 0) * 3}{" "}
+                          pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </>
+              )}
+
+              {/* Valentines Offerings */}
+              {orderSummary.valentines && (
+                <>
+                  <h5>Valentine&apos;s Offerings</h5>
+                  <ListGroup className="mb-3">
+                    {(orderSummary.valentines.chocolateBouquets ?? 0) > 0 && (
+                      <ListGroup.Item>
+                        <strong>Chocolate Bouquets (3 pops + 3 marshmallows):</strong>{" "}
+                        {orderSummary.valentines.chocolateBouquets}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {(orderSummary.valentines.chocolateBouquets ?? 0) * 6}{" "}
+                          pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                    {(orderSummary.valentines.cakePopsSets ?? 0) > 0 && (
+                      <ListGroup.Item>
+                        <strong>Cake Pops Sets (6 pcs each):</strong>{" "}
+                        {orderSummary.valentines.cakePopsSets}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {(orderSummary.valentines.cakePopsSets ?? 0) * 6}{" "}
                           pieces
                         </span>
                       </ListGroup.Item>
