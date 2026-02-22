@@ -449,6 +449,9 @@ const OrderPage: React.FC = () => {
           id="form"
           method="post"
         >
+          <Alert variant="info" className="mb-4">
+            This is not a payment form, so there is no risk in submitting an order. If you have any questions or want to discuss a custom order, feel free to reach out via email or Facebook!
+          </Alert>
           <Form.Group className="mb-3">
             <FloatingLabel label="Full Name">
               <Form.Control
@@ -576,6 +579,9 @@ const OrderPage: React.FC = () => {
                 <option value="cash">Cash</option>
               </Form.Select>
             </FloatingLabel>
+            <Form.Text className="text-muted">
+              No payment is due right now. I'll contact you to discuss pricing and payment options.
+            </Form.Text>
           </Form.Group>
           <Accordion
             flush
@@ -926,7 +932,7 @@ const OrderPage: React.FC = () => {
                 <Accordion.Body>
                   <Form.Group className="mb-3">
                     <InputGroup>
-                      <FloatingLabel label="Valentine&apos;s Chocolate Bouquet (3 cake pops and 3 marshmallows)">
+                      <FloatingLabel label="Choc Bouquet (3 pops, 3 marsh)">
                         <Form.Control
                           name="valentinesChocolateBouquet"
                           placeholder="Quantity"
@@ -945,7 +951,7 @@ const OrderPage: React.FC = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <InputGroup>
-                      <FloatingLabel label="Valentine's Cake Pop Set (6 decorated pops with conversation hearts)">
+                      <FloatingLabel label="Cake Pop Set (6 pops w/ hearts)">
                         <Form.Control
                           name="valentinesCakePopsSet"
                           placeholder="Quantity"
@@ -1029,6 +1035,9 @@ const OrderPage: React.FC = () => {
               <Modal.Title>Order Confirmation</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              <Alert variant="info" className="mb-3">
+              No payment is due right now. I'll contact you to discuss pricing and payment options.
+              </Alert>
               <h5>Customer Information</h5>
               <ListGroup className="mb-3">
                 <ListGroup.Item>
