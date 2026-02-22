@@ -580,7 +580,7 @@ const OrderPage: React.FC = () => {
               </Form.Select>
             </FloatingLabel>
             <Form.Text className="text-muted">
-              No payment is due right now. I'll contact you to discuss pricing and payment options.
+              No payment is due right now. I&apos;ll contact you to discuss pricing and payment options.
             </Form.Text>
           </Form.Group>
           <Accordion
@@ -1036,7 +1036,7 @@ const OrderPage: React.FC = () => {
             </Modal.Header>
             <Modal.Body>
               <Alert variant="info" className="mb-3">
-              No payment is due right now. I'll contact you to discuss pricing and payment options.
+              No payment is due right now. I&apos;ll contact you to discuss pricing and payment options.
               </Alert>
               <h5>Customer Information</h5>
               <ListGroup className="mb-3">
