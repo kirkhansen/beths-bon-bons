@@ -39,6 +39,7 @@ export interface Totals {
   totalThanksgivingPieces?: number;
   totalChristmasPieces?: number;
   totalValentinesPieces?: number;
+  totalEasterPieces?: number;
   grandTotalPieces: number;
 }
 
@@ -72,6 +73,11 @@ export interface SeasonalValentines {
   pieces?: number;
 }
 
+export interface SeasonalEaster {
+  samplers?: number;
+  pieces?: number;
+}
+
 export interface OrderSummary {
   customerInfo: CustomerInfo;
   customOrder: CustomOrder;
@@ -81,5 +87,6 @@ export interface OrderSummary {
   thanksgiving?: SeasonalThanksgiving;
   christmas?: SeasonalChristmas;
   valentines?: SeasonalValentines;
+  easter?: SeasonalEaster;
   totals: Totals;
 }

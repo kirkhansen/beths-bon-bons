@@ -1,5 +1,5 @@
-export const ORDER_FORM_URI = 
-  "https://script.google.com/macros/s/AKfycbwzFYgY1Iz7wunr4tXQXRBqoxRi7T_2DD6IgQDDj_hfaQoHE8A9UBa2CzvDE4D12r3cCw/exec"
+export const ORDER_FORM_URI =
+  "https://script.google.com/macros/s/AKfycbwA2GlK4HirHVnKGAu_fZGkGbsdK8J9fN-TZsut4fp9fUdulAoHsDsAjjGbb0_2S_DElA/exec";
 export const MAIL_CHIMP_URI =
   "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
@@ -83,6 +83,37 @@ export const addOns = [
   { name: "S'mores Bars", unit: "Single", price: "4" },
 ];
 
+// Calculate Easter Sunday using the modified Anonymous Gregorian algorithm
+function getEasterSunday(year: number): Date {
+  const f = Math.floor;
+  const G = year % 19;
+  const C = f(year / 100);
+  const H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30;
+  const I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11));
+  const J = (year + f(year / 4) + I + 2 - C + f(C / 4)) % 7;
+  const L = I - J;
+  const month = 3 + f((L + 40) / 44);
+  const day = L + 28 - 31 * f(month / 4);
+
+  return new Date(year, month - 1, day);
+}
+
+// Calculate Easter season range (3 weeks before to 2 days before Easter)
+function getEasterSeasonRange(year: number): { start: { month: number; day: number }; end: { month: number; day: number } } {
+  const easterDate = getEasterSunday(year);
+
+  const startDate = new Date(easterDate);
+  startDate.setDate(startDate.getDate() - 21); // 3 weeks before
+
+  const endDate = new Date(easterDate);
+  endDate.setDate(endDate.getDate() - 5); // 5 days before
+
+  return {
+    start: { month: startDate.getMonth(), day: startDate.getDate() },
+    end: { month: endDate.getMonth(), day: endDate.getDate() },
+  };
+}
+
 // Seasonal ranges are expressed with 0-indexed months and day numbers.
 export const SEASON_RANGES = {
   danceRecital: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
@@ -90,4 +121,5 @@ export const SEASON_RANGES = {
   thanksgiving: { start: { month: 10, day: 1 }, end: { month: 10, day: 25 } }, // Nov 1 - Nov 25
   christmas: { start: { month: 10, day: 15 }, end: { month: 11, day: 20 } }, // Nov 15 - Dec 20
   valentines: { start: { month: 0, day: 26 }, end: { month: 1, day: 13 } }, // Jan 26 - Feb 13
+  easter: getEasterSeasonRange(new Date().getFullYear()),
 };

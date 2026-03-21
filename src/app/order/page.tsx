@@ -24,7 +24,7 @@ import {
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 import { isPossiblePhoneNumber } from "react-phone-number-input";
-import { OrderSummary, SeasonalChristmas, SeasonalValentines } from "./order_types";
+import { OrderSummary, SeasonalChristmas, SeasonalValentines, SeasonalEaster } from "./order_types";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -70,6 +70,10 @@ const OrderPage: React.FC = () => {
   const showValentines = isSeasonActive(
     SEASON_RANGES.valentines.start,
     SEASON_RANGES.valentines.end,
+  );
+  const showEaster = isSeasonActive(
+    SEASON_RANGES.easter.start,
+    SEASON_RANGES.easter.end,
   );
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [validated, setValidated] = useState(false);
@@ -274,6 +278,24 @@ const OrderPage: React.FC = () => {
       summary.totals.totalValentinesPieces = summary.valentines.pieces;
     }
 
+    // Easter items
+    const easterSamplers = parseInt(
+      (formData.get("easterSampler") as string) || "0",
+    );
+
+    // Only create easter object if at least one item is selected
+    if (easterSamplers > 0) {
+      summary.easter = {
+        samplers: easterSamplers,
+        pieces: 0,
+      } as SeasonalEaster;
+
+      const samplerPieces = easterSamplers * 12; // 3 of each flavor (lemon, red velvet, strawberry, very vanilla) = 12 pieces
+
+      summary.easter.pieces = samplerPieces;
+      summary.totals.totalEasterPieces = samplerPieces;
+    }
+
     // Add-ons (including Christmas section duplicates)
     const christmasFieldMapping: Record<string, string> = {
       christmasBonBons: "Bon Bons",
@@ -323,13 +345,15 @@ const OrderPage: React.FC = () => {
     const thanksgivingPieces = summary.totals.totalThanksgivingPieces || 0;
     const christmasPieces = summary.totals.totalChristmasPieces || 0;
     const valentinesPieces = summary.totals.totalValentinesPieces || 0;
+    const easterPieces = summary.totals.totalEasterPieces || 0;
     summary.totals.grandTotalPieces =
       summary.totals.totalCakePops +
       addOnPieces +
       halloweenPieces +
       thanksgivingPieces +
       christmasPieces +
-      valentinesPieces;
+      valentinesPieces +
+      easterPieces;
 
     return summary;
   };
@@ -449,9 +473,6 @@ const OrderPage: React.FC = () => {
           id="form"
           method="post"
         >
-          <Alert variant="info" className="mb-4">
-            This is not a payment form, so there is no risk in submitting an order. If you have any questions or want to discuss a custom order, feel free to reach out via email or Facebook!
-          </Alert>
           <Form.Group className="mb-3">
             <FloatingLabel label="Full Name">
               <Form.Control
@@ -580,7 +601,7 @@ const OrderPage: React.FC = () => {
               </Form.Select>
             </FloatingLabel>
             <Form.Text className="text-muted">
-              No payment is due right now. I&apos;ll contact you to discuss pricing and payment options.
+              <strong>No payment</strong> is due right now. I&apos;ll contact you to discuss pricing and payment options.
             </Form.Text>
           </Form.Group>
           <Accordion
@@ -971,6 +992,34 @@ const OrderPage: React.FC = () => {
                 </Accordion.Body>
               </Accordion.Item>
             )}
+            {/* Easter Offerings */}
+            {showEaster && (
+              <Accordion.Item eventKey="6">
+                <Accordion.Header>🐰 Easter Cake Pops...</Accordion.Header>
+                <Accordion.Body>
+                  <p>Includes 3 of each flavor: lemon, red velvet, strawberry, very vanilla. No substitutions.</p>
+                  <Form.Group className="mb-3">
+                    <InputGroup>
+                      <FloatingLabel label="Easter Cake Pops">
+                        <Form.Control
+                          name="easterSampler"
+                          placeholder="Quantity"
+                          onChange={handleChange}
+                          type="number"
+                          min="0"
+                          step="1"
+                        />
+                      </FloatingLabel>
+                      <InputGroup.Text
+                        style={{ width: "70px", justifyContent: "center" }}
+                      >
+                        Dozen
+                      </InputGroup.Text>
+                    </InputGroup>
+                  </Form.Group>
+                </Accordion.Body>
+              </Accordion.Item>
+            )}
           </Accordion>
           <h3 className="text-center mt-3">Add-Ons</h3>
           {addOns.map((item) => {
@@ -1036,7 +1085,7 @@ const OrderPage: React.FC = () => {
             </Modal.Header>
             <Modal.Body>
               <Alert variant="info" className="mb-3">
-              No payment is due right now. I&apos;ll contact you to discuss pricing and payment options.
+              <strong>No payment</strong> is due right now. I&apos;ll contact you to discuss pricing and payment options.
               </Alert>
               <h5>Customer Information</h5>
               <ListGroup className="mb-3">
@@ -1224,6 +1273,24 @@ const OrderPage: React.FC = () => {
                         <span className="badge bg-primary rounded-pill ms-2">
                           = {(orderSummary.valentines.cakePopsSets ?? 0) * 6}{" "}
                           pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </>
+              )}
+
+              {/* Easter Offerings */}
+              {orderSummary.easter && (
+                <>
+                  <h5>Easter Cake Pops</h5>
+                  <ListGroup className="mb-3">
+                    {(orderSummary.easter.samplers ?? 0) > 0 && (
+                      <ListGroup.Item>
+                        <strong>Easter Cake Pops:</strong>{" "}
+                        {orderSummary.easter.samplers}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {orderSummary.easter.pieces} pieces
                         </span>
                       </ListGroup.Item>
                     )}
