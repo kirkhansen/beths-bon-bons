@@ -194,11 +194,15 @@ const OrderPage: React.FC = () => {
     Object.entries(DanceRecitalBoxFlavors).forEach(([key, value]) => {
       const boxes = parseInt((formData.get(key) as string) || "0");
       if (boxes > 0) {
+        const pieces = boxes * 4; // each box = 3 cake pops + chocolate covered pretzels
         summary.danceRecital.boxes[key] = {
           name: value,
           boxes: boxes,
+          pieces: pieces,
         };
         summary.totals.totalBoxes += boxes;
+        summary.totals.totalDanceRecitalPieces =
+          (summary.totals.totalDanceRecitalPieces || 0) + pieces;
       }
     });
 
@@ -341,6 +345,7 @@ const OrderPage: React.FC = () => {
 
     // Calculate grand total pieces
     const addOnPieces = summary.totals.totalAddOnPieces || 0;
+    const danceRecitalPieces = summary.totals.totalDanceRecitalPieces || 0;
     const halloweenPieces = summary.totals.totalHalloweenPieces || 0;
     const thanksgivingPieces = summary.totals.totalThanksgivingPieces || 0;
     const christmasPieces = summary.totals.totalChristmasPieces || 0;
@@ -349,6 +354,7 @@ const OrderPage: React.FC = () => {
     summary.totals.grandTotalPieces =
       summary.totals.totalCakePops +
       addOnPieces +
+      danceRecitalPieces +
       halloweenPieces +
       thanksgivingPieces +
       christmasPieces +
@@ -700,8 +706,11 @@ const OrderPage: React.FC = () => {
             {/* Dance Recital Boxes */}
             {showDanceRecital && (
               <Accordion.Item eventKey="1">
-                <Accordion.Header>Dance Recital Boxes...</Accordion.Header>
+                <Accordion.Header>🩰 Dancer Boxes for Recitals - $16</Accordion.Header>
                 <Accordion.Body>
+                  <p className="mb-3">
+                    Each box contains 3 cake pops and chocolate covered pretzels.
+                  </p>
                   <Form.Group className="mb-3">
                     <FloatingLabel label="Dance Studio">
                       <Form.Control
@@ -1158,7 +1167,7 @@ const OrderPage: React.FC = () => {
               {Object.keys(orderSummary.danceRecital?.boxes || {}).length >
                 0 && (
                 <>
-                  <h5>Dance Recital Boxes</h5>
+                  <h5>Dancer Boxes for Recitals</h5>
                   <ListGroup className="mb-3">
                     <ListGroup.Item>
                       <strong>Dance Studio:</strong>{" "}
@@ -1169,6 +1178,9 @@ const OrderPage: React.FC = () => {
                         <ListGroup.Item key={key}>
                           <strong>{box.name}:</strong> {box.boxes}{" "}
                           {box.boxes === 1 ? "box" : "boxes"}
+                          <span className="badge bg-primary rounded-pill ms-2">
+                            = {box.pieces} pieces
+                          </span>
                         </ListGroup.Item>
                       ),
                     )}

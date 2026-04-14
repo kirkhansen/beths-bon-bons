@@ -24,6 +24,7 @@ export interface CustomerInfo {
 export interface DanceRecitalBoxes {
   name: string;
   boxes: number;
+  pieces: number;
 }
 
 export interface DanceRecital {
@@ -35,6 +36,7 @@ export interface Totals {
   totalCakePops: number;
   totalBoxes: number;
   totalAddOnPieces: number;
+  totalDanceRecitalPieces?: number;
   totalHalloweenPieces?: number;
   totalThanksgivingPieces?: number;
   totalChristmasPieces?: number;
