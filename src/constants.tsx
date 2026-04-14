@@ -1,5 +1,5 @@
 export const ORDER_FORM_URI =
-  "https://script.google.com/macros/s/AKfycbwA2GlK4HirHVnKGAu_fZGkGbsdK8J9fN-TZsut4fp9fUdulAoHsDsAjjGbb0_2S_DElA/exec";
+  "https://script.google.com/macros/s/AKfycbwiIs6U_tQw6bQVTRXYhaYRZu9Jb4ktAGBpxxQ3MT1KliN9TFmfqYKonDx_n_rjQvmL_w/exec"
 export const MAIL_CHIMP_URI =
   "https://app.us8.list-manage.com/subscribe/post?u=c72545f330723e5656eae34ce&id=5dfc19aaa6&f_id=000dc9e2f0";
 
