@@ -24,7 +24,7 @@ import {
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 import { isPossiblePhoneNumber } from "react-phone-number-input";
-import { OrderSummary, SeasonalChristmas, SeasonalValentines, SeasonalEaster } from "./order_types";
+import { OrderSummary, SeasonalChristmas, SeasonalValentines, SeasonalEaster, SeasonalTeacherAppreciation } from "./order_types";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -74,6 +74,10 @@ const OrderPage: React.FC = () => {
   const showEaster = isSeasonActive(
     SEASON_RANGES.easter.start,
     SEASON_RANGES.easter.end,
+  );
+  const showTeacherAppreciation = isSeasonActive(
+    SEASON_RANGES.teacherAppreciation.start,
+    SEASON_RANGES.teacherAppreciation.end,
   );
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [validated, setValidated] = useState(false);
@@ -162,6 +166,7 @@ const OrderPage: React.FC = () => {
         totalHalloweenPieces: 0,
         totalChristmasPieces: 0,
         totalThanksgivingPieces: 0,
+        totalTeacherAppreciationPieces: 0,
         grandTotalPieces: 0,
       },
     };
@@ -300,6 +305,24 @@ const OrderPage: React.FC = () => {
       summary.totals.totalEasterPieces = samplerPieces;
     }
 
+    // Teacher Appreciation items
+    const teacherAppreciationBoxes = parseInt(
+      (formData.get("teacherAppreciation") as string) || "0",
+    );
+
+    // Only create teacherAppreciation object if at least one item is selected
+    if (teacherAppreciationBoxes > 0) {
+      summary.teacherAppreciation = {
+        boxes: teacherAppreciationBoxes,
+        pieces: 0,
+      } as SeasonalTeacherAppreciation;
+
+      const teacherAppreciationPieces = teacherAppreciationBoxes * 1; // It's a single chocolate
+
+      summary.teacherAppreciation.pieces = teacherAppreciationPieces;
+      summary.totals.totalTeacherAppreciationPieces = teacherAppreciationPieces;
+    }
+
     // Add-ons (including Christmas section duplicates)
     const christmasFieldMapping: Record<string, string> = {
       christmasBonBons: "Bon Bons",
@@ -351,6 +374,7 @@ const OrderPage: React.FC = () => {
     const christmasPieces = summary.totals.totalChristmasPieces || 0;
     const valentinesPieces = summary.totals.totalValentinesPieces || 0;
     const easterPieces = summary.totals.totalEasterPieces || 0;
+    const teacherAppreciationPieces = summary.totals.totalTeacherAppreciationPieces || 0;
     summary.totals.grandTotalPieces =
       summary.totals.totalCakePops +
       addOnPieces +
@@ -359,7 +383,8 @@ const OrderPage: React.FC = () => {
       thanksgivingPieces +
       christmasPieces +
       valentinesPieces +
-      easterPieces;
+      easterPieces +
+      teacherAppreciationPieces;
 
     return summary;
   };
@@ -1029,6 +1054,34 @@ const OrderPage: React.FC = () => {
                 </Accordion.Body>
               </Accordion.Item>
             )}
+            {/* Teacher Appreciation Offerings */}
+            {showTeacherAppreciation && (
+              <Accordion.Item eventKey="7">
+                <Accordion.Header>🍎 Teacher Appreciation Chocolates - $6</Accordion.Header>
+                <Accordion.Body>
+                  <p>Approximately 4 oz of Espresso Milk Chocolate in fun, teacher themed shapes!</p>
+                  <Form.Group className="mb-3">
+                    <InputGroup>
+                      <FloatingLabel label="Teacher Appreciation Chocolates">
+                        <Form.Control
+                          name="teacherAppreciation"
+                          placeholder="Quantity"
+                          onChange={handleChange}
+                          type="number"
+                          min="0"
+                          step="1"
+                        />
+                      </FloatingLabel>
+                      <InputGroup.Text
+                        style={{ width: "70px", justifyContent: "center" }}
+                      >
+                        $6
+                      </InputGroup.Text>
+                    </InputGroup>
+                  </Form.Group>
+                </Accordion.Body>
+              </Accordion.Item>
+            )}
           </Accordion>
           <h3 className="text-center mt-3">Add-Ons</h3>
           {addOns.map((item) => {
@@ -1310,6 +1363,24 @@ const OrderPage: React.FC = () => {
                 </>
               )}
 
+              {/* Teacher Appreciation Offerings */}
+              {orderSummary.teacherAppreciation && (
+                <>
+                  <h5>Teacher Appreciation Chocolates</h5>
+                  <ListGroup className="mb-3">
+                    {(orderSummary.teacherAppreciation.boxes ?? 0) > 0 && (
+                      <ListGroup.Item>
+                        <strong>Teacher Appreciation Chocolates (4 oz each):</strong>{" "}
+                        {orderSummary.teacherAppreciation.boxes}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {orderSummary.teacherAppreciation.pieces} pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </>
+              )}
+
               {/* Add-ons */}
               {Object.keys(orderSummary.addOns || {}).length > 0 && (
                 <>
@@ -1372,6 +1443,14 @@ const OrderPage: React.FC = () => {
                   <p className="mb-1">
                     <strong>
                       Add-On Items: {orderSummary.totals.totalAddOnPieces}{" "}
+                      pieces
+                    </strong>
+                  </p>
+                )}
+                {(orderSummary.totals?.totalTeacherAppreciationPieces ?? 0) > 0 && (
+                  <p className="mb-1">
+                    <strong>
+                      Teacher Appreciation: {orderSummary.totals.totalTeacherAppreciationPieces}{" "}
                       pieces
                     </strong>
                   </p>

@@ -116,10 +116,11 @@ function getEasterSeasonRange(year: number): { start: { month: number; day: numb
 
 // Seasonal ranges are expressed with 0-indexed months and day numbers.
 export const SEASON_RANGES = {
-  danceRecital: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
-  halloween: { start: { month: 9, day: 1 }, end: { month: 9, day: 31 } }, // Oct 1 - Oct 31
-  thanksgiving: { start: { month: 10, day: 1 }, end: { month: 10, day: 25 } }, // Nov 1 - Nov 25
   christmas: { start: { month: 10, day: 15 }, end: { month: 11, day: 20 } }, // Nov 15 - Dec 20
-  valentines: { start: { month: 0, day: 26 }, end: { month: 1, day: 13 } }, // Jan 26 - Feb 13
+  danceRecital: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
   easter: getEasterSeasonRange(new Date().getFullYear()),
+  halloween: { start: { month: 9, day: 1 }, end: { month: 9, day: 31 } }, // Oct 1 - Oct 31
+  teacherAppreciation: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
+  thanksgiving: { start: { month: 10, day: 1 }, end: { month: 10, day: 25 } }, // Nov 1 - Nov 25
+  valentines: { start: { month: 0, day: 26 }, end: { month: 1, day: 13 } }, // Jan 26 - Feb 13
 };
