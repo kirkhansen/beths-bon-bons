@@ -120,8 +120,8 @@ export const SEASON_RANGES = {
   danceRecital: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
   easter: getEasterSeasonRange(new Date().getFullYear()),
   halloween: { start: { month: 9, day: 1 }, end: { month: 9, day: 31 } }, // Oct 1 - Oct 31
-  mothersDay: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
-  teacherAppreciation: { start: { month: 3, day: 15 }, end: { month: 5, day: 15 } }, // Apr 15 - Jun 15
+  mothersDay: { start: { month: 3, day: 15 }, end: { month: 4, day: 4 } }, // Apr 15 - May 4
+  teacherAppreciation: { start: { month: 3, day: 15 }, end: { month: 4, day: 4 } }, // Apr 15 - May 4
   thanksgiving: { start: { month: 10, day: 1 }, end: { month: 10, day: 25 } }, // Nov 1 - Nov 25
   valentines: { start: { month: 0, day: 26 }, end: { month: 1, day: 13 } }, // Jan 26 - Feb 13
 };
