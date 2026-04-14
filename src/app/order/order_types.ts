@@ -42,6 +42,7 @@ export interface Totals {
   totalChristmasPieces?: number;
   totalValentinesPieces?: number;
   totalEasterPieces?: number;
+  totalTeacherAppreciationPieces?: number;
   grandTotalPieces: number;
 }
 
@@ -80,6 +81,11 @@ export interface SeasonalEaster {
   pieces?: number;
 }
 
+export interface SeasonalTeacherAppreciation {
+  boxes?: number;
+  pieces?: number;
+}
+
 export interface OrderSummary {
   customerInfo: CustomerInfo;
   customOrder: CustomOrder;
@@ -90,5 +96,6 @@ export interface OrderSummary {
   christmas?: SeasonalChristmas;
   valentines?: SeasonalValentines;
   easter?: SeasonalEaster;
+  teacherAppreciation?: SeasonalTeacherAppreciation;
   totals: Totals;
 }
