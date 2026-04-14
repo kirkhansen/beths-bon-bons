@@ -24,7 +24,7 @@ import {
 } from "../../constants";
 import { AccordionEventKey } from "react-bootstrap/esm/AccordionContext";
 import { isPossiblePhoneNumber } from "react-phone-number-input";
-import { OrderSummary, SeasonalChristmas, SeasonalValentines, SeasonalEaster, SeasonalTeacherAppreciation } from "./order_types";
+import { OrderSummary, SeasonalChristmas, SeasonalValentines, SeasonalEaster, SeasonalTeacherAppreciation, SeasonalMothersDay } from "./order_types";
 
 const OrderPage: React.FC = () => {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -78,6 +78,10 @@ const OrderPage: React.FC = () => {
   const showTeacherAppreciation = isSeasonActive(
     SEASON_RANGES.teacherAppreciation.start,
     SEASON_RANGES.teacherAppreciation.end,
+  );
+  const showMothersDay = isSeasonActive(
+    SEASON_RANGES.mothersDay.start,
+    SEASON_RANGES.mothersDay.end,
   );
   const [formState, setFormState] = useState<BaseFormState>(defaultFormState);
   const [validated, setValidated] = useState(false);
@@ -167,6 +171,7 @@ const OrderPage: React.FC = () => {
         totalChristmasPieces: 0,
         totalThanksgivingPieces: 0,
         totalTeacherAppreciationPieces: 0,
+        totalMothersDayPieces: 0,
         grandTotalPieces: 0,
       },
     };
@@ -323,6 +328,30 @@ const OrderPage: React.FC = () => {
       summary.totals.totalTeacherAppreciationPieces = teacherAppreciationPieces;
     }
 
+    // Mother's Day items
+    const mothersDayCoffeeChocolates = parseInt(
+      (formData.get("mothersDayCoffeeChocolates") as string) || "0",
+    );
+    const mothersDayCakeBallBoxes = parseInt(
+      (formData.get("mothersDayCakeBallBoxes") as string) || "0",
+    );
+
+    // Only create mothersDay object if at least one item is selected
+    if (mothersDayCoffeeChocolates > 0 || mothersDayCakeBallBoxes > 0) {
+      summary.mothersDay = {
+        coffeeChocolates: mothersDayCoffeeChocolates,
+        cakeBallBoxes: mothersDayCakeBallBoxes,
+        pieces: 0,
+      } as SeasonalMothersDay;
+
+      const coffeeChocolatesPieces = mothersDayCoffeeChocolates * 1; // 1 4 oz treat
+      console.log(coffeeChocolatesPieces);
+      const cakeBallBoxesPieces = mothersDayCakeBallBoxes * 4; // 4 cake balls per box
+
+      summary.mothersDay.pieces = coffeeChocolatesPieces + cakeBallBoxesPieces;
+      summary.totals.totalMothersDayPieces = summary.mothersDay.pieces;
+    }
+
     // Add-ons (including Christmas section duplicates)
     const christmasFieldMapping: Record<string, string> = {
       christmasBonBons: "Bon Bons",
@@ -375,6 +404,7 @@ const OrderPage: React.FC = () => {
     const valentinesPieces = summary.totals.totalValentinesPieces || 0;
     const easterPieces = summary.totals.totalEasterPieces || 0;
     const teacherAppreciationPieces = summary.totals.totalTeacherAppreciationPieces || 0;
+    const mothersDayPieces = summary.totals.totalMothersDayPieces || 0;
     summary.totals.grandTotalPieces =
       summary.totals.totalCakePops +
       addOnPieces +
@@ -384,7 +414,8 @@ const OrderPage: React.FC = () => {
       christmasPieces +
       valentinesPieces +
       easterPieces +
-      teacherAppreciationPieces;
+      teacherAppreciationPieces +
+      mothersDayPieces;
 
     return summary;
   };
@@ -731,7 +762,7 @@ const OrderPage: React.FC = () => {
             {/* Dance Recital Boxes */}
             {showDanceRecital && (
               <Accordion.Item eventKey="1">
-                <Accordion.Header>🩰 Dancer Boxes for Recitals - $16</Accordion.Header>
+                <Accordion.Header>🩰 Dancer Boxes for Recitals - $16...</Accordion.Header>
                 <Accordion.Body>
                   <p className="mb-3">
                     Each box contains 3 cake pops and chocolate covered pretzels.
@@ -1057,7 +1088,7 @@ const OrderPage: React.FC = () => {
             {/* Teacher Appreciation Offerings */}
             {showTeacherAppreciation && (
               <Accordion.Item eventKey="7">
-                <Accordion.Header>🍎 Teacher Appreciation Chocolates - $6</Accordion.Header>
+                <Accordion.Header>🍎 Teacher Appreciation Chocolates - $6...</Accordion.Header>
                 <Accordion.Body>
                   <p>Approximately 4 oz of Espresso Milk Chocolate in fun, teacher themed shapes!</p>
                   <Form.Group className="mb-3">
@@ -1078,6 +1109,54 @@ const OrderPage: React.FC = () => {
                         $6
                       </InputGroup.Text>
                     </InputGroup>
+                  </Form.Group>
+                </Accordion.Body>
+              </Accordion.Item>
+            )}
+            {/* Mother's Day Offerings */}
+            {showMothersDay && (
+              <Accordion.Item eventKey="8">
+                <Accordion.Header>💐 Mother's Day Treats...</Accordion.Header>
+                <Accordion.Body>
+                  <Form.Group className="mb-3">
+                    <InputGroup>
+                      <FloatingLabel label="Coffee Chocolates (4 oz)">
+                        <Form.Control
+                          name="mothersDayCoffeeChocolates"
+                          placeholder="Quantity"
+                          onChange={handleChange}
+                          type="number"
+                          min="0"
+                          step="1"
+                        />
+                      </FloatingLabel>
+                      <InputGroup.Text
+                        style={{ width: "100px", justifyContent: "center" }}
+                      >
+                        $6
+                      </InputGroup.Text>
+                    </InputGroup>
+                    <small className="text-muted">Approximately 4 oz of Espresso Milk Chocolate in fun, floral and Mom-themed shapes.</small>
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <InputGroup>
+                      <FloatingLabel label="Cake Ball Box">
+                        <Form.Control
+                          name="mothersDayCakeBallBoxes"
+                          placeholder="Quantity"
+                          onChange={handleChange}
+                          type="number"
+                          min="0"
+                          step="1"
+                        />
+                      </FloatingLabel>
+                      <InputGroup.Text
+                        style={{ width: "100px", justifyContent: "center" }}
+                      >
+                        $14
+                      </InputGroup.Text>
+                    </InputGroup>
+                    <small className="text-muted">4 cake balls (2 chocolate and 2 vanilla) decorated with beautiful florals and Mom-themed shapes.</small>
                   </Form.Group>
                 </Accordion.Body>
               </Accordion.Item>
@@ -1381,6 +1460,33 @@ const OrderPage: React.FC = () => {
                 </>
               )}
 
+              {/* Mother's Day Offerings */}
+              {orderSummary.mothersDay && (
+                <>
+                  <h5>Mother's Day Treats</h5>
+                  <ListGroup className="mb-3">
+                    {(orderSummary.mothersDay.coffeeChocolates ?? 0) > 0 && (
+                      <ListGroup.Item>
+                        <strong>Coffee Chocolates (4 oz each):</strong>{" "}
+                        {orderSummary.mothersDay.coffeeChocolates}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {(orderSummary.mothersDay.coffeeChocolates ?? 0) * 1} pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                    {(orderSummary.mothersDay.cakeBallBoxes ?? 0) > 0 && (
+                      <ListGroup.Item>
+                        <strong>Cake Ball Boxes (4 balls each):</strong>{" "}
+                        {orderSummary.mothersDay.cakeBallBoxes}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {(orderSummary.mothersDay.cakeBallBoxes ?? 0) * 4} pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </>
+              )}
+
               {/* Add-ons */}
               {Object.keys(orderSummary.addOns || {}).length > 0 && (
                 <>
@@ -1451,6 +1557,14 @@ const OrderPage: React.FC = () => {
                   <p className="mb-1">
                     <strong>
                       Teacher Appreciation: {orderSummary.totals.totalTeacherAppreciationPieces}{" "}
+                      pieces
+                    </strong>
+                  </p>
+                )}
+                {(orderSummary.totals?.totalMothersDayPieces ?? 0) > 0 && (
+                  <p className="mb-1">
+                    <strong>
+                      Mother's Day: {orderSummary.totals.totalMothersDayPieces}{" "}
                       pieces
                     </strong>
                   </p>
