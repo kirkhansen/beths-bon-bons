@@ -1116,7 +1116,7 @@ const OrderPage: React.FC = () => {
             {/* Mother's Day Offerings */}
             {showMothersDay && (
               <Accordion.Item eventKey="8">
-                <Accordion.Header>💐 Mother's Day Treats...</Accordion.Header>
+                <Accordion.Header>💐 `Mother&apos;s Day Treats...`</Accordion.Header>
                 <Accordion.Body>
                   <Form.Group className="mb-3">
                     <InputGroup>
@@ -1463,7 +1463,7 @@ const OrderPage: React.FC = () => {
               {/* Mother's Day Offerings */}
               {orderSummary.mothersDay && (
                 <>
-                  <h5>Mother's Day Treats</h5>
+                  <h5>Mother&apos;s Day Treats</h5>
                   <ListGroup className="mb-3">
                     {(orderSummary.mothersDay.coffeeChocolates ?? 0) > 0 && (
                       <ListGroup.Item>
@@ -1564,7 +1564,7 @@ const OrderPage: React.FC = () => {
                 {(orderSummary.totals?.totalMothersDayPieces ?? 0) > 0 && (
                   <p className="mb-1">
                     <strong>
-                      Mother's Day: {orderSummary.totals.totalMothersDayPieces}{" "}
+                      Mother&apos;s Day: {orderSummary.totals.totalMothersDayPieces}{" "}
                       pieces
                     </strong>
                   </p>
