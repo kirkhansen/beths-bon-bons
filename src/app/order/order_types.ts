@@ -83,7 +83,8 @@ export interface SeasonalEaster {
 }
 
 export interface SeasonalTeacherAppreciation {
-  boxes?: number;
+  chocolates?: number;
+  cakeBallBoxes?: number;
   pieces?: number;
 }
 

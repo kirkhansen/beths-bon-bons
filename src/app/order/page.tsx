@@ -311,21 +311,26 @@ const OrderPage: React.FC = () => {
     }
 
     // Teacher Appreciation items
-    const teacherAppreciationBoxes = parseInt(
+    const teacherAppreciationChocolates = parseInt(
       (formData.get("teacherAppreciation") as string) || "0",
+    );
+    const teacherAppreciationCakeBallBoxes = parseInt(
+      (formData.get("teacherAppreciationCakeBallBox") as string) || "0",
     );
 
     // Only create teacherAppreciation object if at least one item is selected
-    if (teacherAppreciationBoxes > 0) {
+    if (teacherAppreciationChocolates > 0 || teacherAppreciationCakeBallBoxes > 0) {
       summary.teacherAppreciation = {
-        boxes: teacherAppreciationBoxes,
+        chocolates: teacherAppreciationChocolates,
+        cakeBallBoxes: teacherAppreciationCakeBallBoxes,
         pieces: 0,
       } as SeasonalTeacherAppreciation;
 
-      const teacherAppreciationPieces = teacherAppreciationBoxes * 1; // It's a single chocolate
+      const chocolatesPieces = teacherAppreciationChocolates * 1; // 1 chocolate box
+      const cakeBallBoxesPieces = teacherAppreciationCakeBallBoxes * 4; // 4 cake balls per box
 
-      summary.teacherAppreciation.pieces = teacherAppreciationPieces;
-      summary.totals.totalTeacherAppreciationPieces = teacherAppreciationPieces;
+      summary.teacherAppreciation.pieces = chocolatesPieces + cakeBallBoxesPieces;
+      summary.totals.totalTeacherAppreciationPieces = summary.teacherAppreciation.pieces;
     }
 
     // Mother's Day items
@@ -1088,10 +1093,10 @@ const OrderPage: React.FC = () => {
             {/* Teacher Appreciation Offerings */}
             {showTeacherAppreciation && (
               <Accordion.Item eventKey="7">
-                <Accordion.Header>🍎 Teacher Appreciation Chocolates - $6...</Accordion.Header>
+                <Accordion.Header>🍎 Teacher Appreciation Treats...</Accordion.Header>
                 <Accordion.Body>
-                  <p>Approximately 4 oz of Espresso Milk Chocolate in fun, teacher themed shapes!</p>
                   <Form.Group className="mb-3">
+                    <p>Espresso Milk Chocolate (approximately 4 oz) in fun, teacher themed shapes!</p>
                     <InputGroup>
                       <FloatingLabel label="Teacher Appreciation Chocolates">
                         <Form.Control
@@ -1110,13 +1115,33 @@ const OrderPage: React.FC = () => {
                       </InputGroup.Text>
                     </InputGroup>
                   </Form.Group>
+                  <Form.Group className="mb-3">
+                    <p>Cake Ball Box (2 chocolate, 2 vanilla) with fun teacher themed chocolate decoration!</p>
+                    <InputGroup>
+                      <FloatingLabel label="Cake Ball Boxes">
+                        <Form.Control
+                          name="teacherAppreciationCakeBallBox"
+                          placeholder="Quantity"
+                          onChange={handleChange}
+                          type="number"
+                          min="0"
+                          step="1"
+                        />
+                      </FloatingLabel>
+                      <InputGroup.Text
+                        style={{ width: "70px", justifyContent: "center" }}
+                      >
+                        $14
+                      </InputGroup.Text>
+                    </InputGroup>
+                  </Form.Group>
                 </Accordion.Body>
               </Accordion.Item>
             )}
             {/* Mother's Day Offerings */}
             {showMothersDay && (
               <Accordion.Item eventKey="8">
-                <Accordion.Header>💐 `Mother&apos;s Day Treats...`</Accordion.Header>
+                <Accordion.Header>💐 Mother&apos;s Day Treats...</Accordion.Header>
                 <Accordion.Body>
                   <Form.Group className="mb-3">
                     <InputGroup>
@@ -1445,14 +1470,23 @@ const OrderPage: React.FC = () => {
               {/* Teacher Appreciation Offerings */}
               {orderSummary.teacherAppreciation && (
                 <>
-                  <h5>Teacher Appreciation Chocolates</h5>
+                  <h5>Teacher Appreciation Treats</h5>
                   <ListGroup className="mb-3">
-                    {(orderSummary.teacherAppreciation.boxes ?? 0) > 0 && (
+                    {(orderSummary.teacherAppreciation.chocolates ?? 0) > 0 && (
                       <ListGroup.Item>
-                        <strong>Teacher Appreciation Chocolates (4 oz each):</strong>{" "}
-                        {orderSummary.teacherAppreciation.boxes}
+                        <strong>Chocolates (4 oz each):</strong>{" "}
+                        {orderSummary.teacherAppreciation.chocolates}
                         <span className="badge bg-primary rounded-pill ms-2">
-                          = {orderSummary.teacherAppreciation.pieces} pieces
+                          = {orderSummary.teacherAppreciation.chocolates} pieces
+                        </span>
+                      </ListGroup.Item>
+                    )}
+                    {(orderSummary.teacherAppreciation.cakeBallBoxes ?? 0) > 0 && (
+                      <ListGroup.Item>
+                        <strong>Cake Ball Boxes (2 chocolate, 2 vanilla):</strong>{" "}
+                        {orderSummary.teacherAppreciation.cakeBallBoxes}
+                        <span className="badge bg-primary rounded-pill ms-2">
+                          = {(orderSummary.teacherAppreciation.cakeBallBoxes ?? 0) * 4} pieces
                         </span>
                       </ListGroup.Item>
                     )}
