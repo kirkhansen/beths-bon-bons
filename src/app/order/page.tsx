@@ -633,6 +633,11 @@ const OrderPage: React.FC = () => {
             </FloatingLabel>
           </Form.Group>
           <div className="row mb-3">
+            <div className="col-12 mb-2">
+              <Form.Text>
+                Please select your ideal 15 minute window of time to pickup. This will be confirmed by Beth and can be adjusted when the pickup date gets closer. 
+              </Form.Text>
+            </div>
             <div className="col-md-6">
               <Form.Group>
                 <FloatingLabel label="Date of Pickup">
