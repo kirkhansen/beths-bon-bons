@@ -98,8 +98,30 @@ const OrderPage: React.FC = () => {
   >({});
   const [boxCounts, setBoxCounts] = useState<{ [key: string]: number }>({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pickupDate, setPickupDate] = useState<string>("");
+  const [pickupTime, setPickupTime] = useState<string>("");
   const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
   const phoneInputRef = useRef<HTMLDivElement | null>(null);
+
+  // Generate time options in 15-minute increments between 8:15 AM and 6:00 PM
+  const generateTimeOptions = () => {
+    const times: Array<{ value: string; display: string }> = [];
+    for (let hours = 8; hours <= 18; hours++) {
+      const startMinutes = hours === 8 ? 15 : 0; // Start at 8:15
+      const endMinutes = hours === 18 ? 0 : 60; // End at 18:00
+      for (let minutes = startMinutes; minutes < endMinutes; minutes += 15) {
+        const value = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+        
+        // Convert to 12-hour AM/PM format for display
+        const hour12 = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
+        const ampm = hours >= 12 ? "PM" : "AM";
+        const display = `${hour12}:${String(minutes).padStart(2, "0")} ${ampm}`;
+        
+        times.push({ value, display });
+      }
+    }
+    return times;
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -437,12 +459,22 @@ const OrderPage: React.FC = () => {
       return;
     }
 
+    // Validate pickup date/time is selected
+    if (!pickupDate || !pickupTime) {
+      setErrorMessage("Please select a pickup date and time.");
+      setValidated(true);
+      return;
+    }
+
     // Add custom fields not bound to the form controls
     if (referralSourceSelection === "Other") {
       formData.set("referralSource", referralSourceOtherValue);
     } else {
       formData.set("referralSource", referralSourceSelection);
     }
+
+    // Combine pickup date and time
+    formData.set("pickupDate", `${pickupDate}T${pickupTime}`);
 
     //set errors to none again, if we made it this far
     setErrorMessage("");
@@ -600,22 +632,43 @@ const OrderPage: React.FC = () => {
               />
             </FloatingLabel>
           </Form.Group>
-          <Form.Group className="mb-3">
-            <FloatingLabel label="Date of Pickup">
-              <Form.Control
-                required
-                name="pickupDate"
-                placeholder="Date of Pickup"
-                onChange={handleChange}
-                type="date"
-                min={today}
-              />
-            </FloatingLabel>
-            <Form.Text>
-              Treats are good for 3-5 days at room temperature, and they are
-              good up to two weeks in the refrigerator
-            </Form.Text>
-          </Form.Group>
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <Form.Group>
+                <FloatingLabel label="Date of Pickup">
+                  <Form.Control
+                    required
+                    value={pickupDate}
+                    onChange={(e) => setPickupDate(e.target.value)}
+                    type="date"
+                    min={today}
+                  />
+                </FloatingLabel>
+              </Form.Group>
+            </div>
+            <div className="col-md-6">
+              <Form.Group>
+                <FloatingLabel label="Time of Pickup">
+                  <Form.Select
+                    required
+                    value={pickupTime}
+                    onChange={(e) => setPickupTime(e.target.value)}
+                  >
+                    <option value="">Select a time</option>
+                    {generateTimeOptions().map((time) => (
+                      <option key={time.value} value={time.value}>
+                        {time.display}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </FloatingLabel>
+              </Form.Group>
+            </div>
+          </div>
+          <Form.Text>
+            Treats are good for 3-5 days at room temperature, and they are
+            good up to two weeks in the refrigerator
+          </Form.Text>
           <Form.Group className="mb-3">
             <Form.Label>How did you hear about me?</Form.Label>
             <Form.Check
