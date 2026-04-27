@@ -34,7 +34,7 @@ export type BaseFormState = {
   email: string;
   phone: string;
   eventDate: string;
-  pickupDate: string; // Treats are good for 3-5 days on the counter/room temp, and they are good up to two weeks in the fridge
+  pickupDate: string;
   referralSource: string;
   paymentMethod: PaymentMethod;
   eventType: string;

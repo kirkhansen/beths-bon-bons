@@ -527,6 +527,9 @@ const OrderPage: React.FC = () => {
       formData.delete(christmasField);
     });
 
+    // Combine pickup date and time
+    formData.set("pickupDate", `${pickupDate}T${pickupTime}`);
+
     try {
       const response = await fetch(ORDER_FORM_URI, {
         method: "POST",
