@@ -92,7 +92,7 @@ const OrderPage: React.FC = () => {
   const [referralSourceOtherValue, setReferralSourceOtherValue] =
     useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [activeKey, setActiveKey] = useState<AccordionEventKey | null>(null);
+  const [activeKey, setActiveKey] = useState<AccordionEventKey | null>("0");
   const inputRefs = useRef<
     Record<string, React.RefObject<HTMLInputElement | null>>
   >({});
@@ -413,7 +413,7 @@ const OrderPage: React.FC = () => {
         }
 
         summary.addOns[item.name] = {
-          name: item.name,
+          name: item.displayName ?? item.name,
           quantity: quantity,
           unit: item.unit,
           pieces: pieces,
@@ -1247,40 +1247,45 @@ const OrderPage: React.FC = () => {
                 </Accordion.Body>
               </Accordion.Item>
             )}
+            <Accordion.Item eventKey="9" className="custom-accordion-item">
+              <Accordion.Header>Add-Ons</Accordion.Header>
+              <Accordion.Body>
+                {addOns.map((item) => {
+                  if (!inputRefs.current[item.name]) {
+                    inputRefs.current[item.name] = React.createRef();
+                  }
+                  return (
+                    <Form.Group key={item.name} className="mb-2">
+                      <InputGroup>
+                        <FloatingLabel label={item.displayName ?? item.name}>
+                          <Form.Control
+                            ref={inputRefs.current[item.name]}
+                            name={item.name}
+                            placeholder={item.displayName ?? item.name}
+                            onChange={handleChange}
+                            type="number"
+                            min="0"
+                          />
+                        </FloatingLabel>
+                        <InputGroup.Text
+                          style={{ width: "100px" }}
+                          className="text-center"
+                          onClick={() =>
+                            inputRefs.current[item.name]?.current?.focus()
+                          }
+                        >
+                          {item.unit}
+                        </InputGroup.Text>
+                      </InputGroup>
+                      {item.description && (
+                        <Form.Text>{item.description}</Form.Text>
+                      )}
+                    </Form.Group>
+                  );
+                })}
+              </Accordion.Body>
+            </Accordion.Item>
           </Accordion>
-          <h3 className="text-center mt-3">Add-Ons</h3>
-          {addOns.map((item) => {
-            if (!inputRefs.current[item.name]) {
-              inputRefs.current[item.name] = React.createRef();
-            }
-            return (
-              <Form.Group key={item["name"]} className="mb-2">
-                <InputGroup key={item + "-optional-input-group"}>
-                  <FloatingLabel key={item + "-label"} label={item["name"]}>
-                    <Form.Control
-                      key={item + "-add-ons"}
-                      ref={inputRefs.current[item.name]}
-                      name={item["name"]}
-                      placeholder={item["name"]}
-                      onChange={handleChange}
-                      type="number"
-                      min="0"
-                    />
-                  </FloatingLabel>
-                  <InputGroup.Text
-                    key={item + "input-group-text"}
-                    style={{ width: "100px" }}
-                    className="text-center"
-                    onClick={() =>
-                      inputRefs.current[item.name]?.current?.focus()
-                    }
-                  >
-                    {item["unit"]}
-                  </InputGroup.Text>
-                </InputGroup>
-              </Form.Group>
-            );
-          })}
           <div className="d-grid gap-2 mt-4">
             <Button variant="dark" type="submit" disabled={loading}>
               {loading ? (
