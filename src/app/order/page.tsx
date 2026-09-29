@@ -1248,7 +1248,7 @@ const OrderPage: React.FC = () => {
               </Accordion.Item>
             )}
             <Accordion.Item eventKey="9" className="custom-accordion-item">
-              <Accordion.Header>Add-Ons</Accordion.Header>
+              <Accordion.Header>Add-Ons...</Accordion.Header>
               <Accordion.Body>
                 {addOns.map((item) => {
                   if (!inputRefs.current[item.name]) {
