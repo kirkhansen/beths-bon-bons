@@ -740,7 +740,7 @@ const OrderPage: React.FC = () => {
           >
             {/* Custom orders */}
             <Accordion.Item eventKey="0" className="custom-accordion-item">
-              <Accordion.Header>Custom Order...</Accordion.Header>
+              <Accordion.Header>Custom Cake Pops...</Accordion.Header>
               <Accordion.Body>
                 <Form.Group className="mb-3">
                   <FloatingLabel label="Event Type">
