@@ -72,8 +72,20 @@ export interface PostResponse {
 
 export const email = "bethsbonbons@gmail.com";
 
-export const addOns = [
-  { name: "Bon Bons", unit: "Dozen", price: "15" },
+export const addOns: {
+  name: string;
+  unit: string;
+  price: string;
+  displayName?: string;
+  description?: string;
+}[] = [
+  {
+    name: "Bon Bons",
+    unit: "Dozen",
+    price: "15",
+    displayName: "Peanut Butter Bon Bons",
+    description: "Not decorated; dipped in milk chocolate.",
+  },
   { name: "Coffee Bites", unit: "4 Ounces", price: "10" },
   { name: "Coffee Flight", unit: "3 Bars", price: "20" },
   { name: "Custom Chocolate Bars", unit: "Single", price: "5" },
